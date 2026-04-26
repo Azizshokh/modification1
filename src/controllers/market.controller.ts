@@ -5,6 +5,7 @@ import MemberService from "../models/Member.service";
 const marketController: T = {};
 marketController.goHome = (req: Request, res: Response) => {
     try {
+        console.log("goHome");
         res.send("You are on HomePage");
     } catch (error) {
         console.error("Error in goHome:", error);
