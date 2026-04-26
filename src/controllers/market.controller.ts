@@ -31,4 +31,22 @@ marketController.getSignup = (req: Request, res: Response) => {
     }
 };
 
+marketController.proccesLogin = (req: Request, res: Response) => {
+    try {
+        res.send("You are on proccesLoginPage");
+    } catch (error) {
+        console.error("Error in proccesLogin:", error);
+
+    }
+};
+
+marketController.proccesSignup = (req: Request, res: Response) => {
+    try {
+        res.send("You are on proccesSignupPage");
+    } catch (error) {
+        console.error("Error in proccesSignup:", error);
+
+    }
+};
+
 export default marketController;
