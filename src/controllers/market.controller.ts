@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { T } from "../libs/types/common";
 import MemberService from "../models/Member.service";
+import { MemberInput } from "../libs/types/member";
+import { MemberType } from "../libs/enums/member.enum";
 
 const marketController: T = {};
 marketController.goHome = (req: Request, res: Response) => {
@@ -40,9 +42,18 @@ marketController.proccesLogin = (req: Request, res: Response) => {
     }
 };
 
-marketController.proccesSignup = (req: Request, res: Response) => {
+marketController.proccesSignup = async (req: Request, res: Response) => {
     try {
-        res.send("You are on proccesSignupPage");
+        console.log("proccesSignup");
+        console.log("body:", req.body);
+
+        const newMember: MemberInput = req.body;
+        newMember.memberType = MemberType.ADMIN;
+
+        const memberService = new MemberService();
+        const result = await memberService.proccessSignup(newMember);
+
+        res.send(result);
     } catch (error) {
         console.error("Error in proccesSignup:", error);
 
