@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { T } from "../libs/types/common";
 import MemberService from "../models/Member.service";
-import { AdminRequest, LoginInput, MemberInput } from "../libs/types/member";
+import { AdminRequest, LoginInput, MemberInput, MemberUpdateInput } from "../libs/types/member";
 import { MemberType } from "../libs/enums/member.enum";
 import Errors, { HttpCode, Message } from "../libs/Error";
 
@@ -99,12 +99,20 @@ marketController.getUsers = async (req: Request, res: Response) => {
     }
 };
 
-marketController.updateChosenUser = (req: Request, res: Response) => {
+marketController.updateChosenUser = async (req: Request, res: Response) => {
     try {
         console.log("updateChosenUser");
+        const input: MemberUpdateInput = req.body;
+        const result = await memberService.updateChosenUser(input);
+
+        res.status(HttpCode.OK).json({ data: result });
     } catch (error) {
         console.error("Error in updateChosenUser:", error);
-        res.redirect("/admin");
+        if (error instanceof Errors) {
+            res.status(error.code).json(error);
+        } else {
+            res.status(Errors.standard.code).json(Errors.standard);
+        }
     }
 };
 

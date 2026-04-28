@@ -43,6 +43,11 @@ routerAdmin.get(
     marketController.verifyAdmin,
     marketController.getUsers
 );
+routerAdmin.post(
+    "/user/edit",
+    marketController.verifyAdmin,
+    marketController.updateChosenUser
+);
 
 
 export default routerAdmin;
