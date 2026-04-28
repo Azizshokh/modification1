@@ -9,7 +9,7 @@ const marketController: T = {};
 marketController.goHome = (req: Request, res: Response) => {
     try {
         console.log("goHome");
-        res.send("You are on HomePage");
+        res.render("home");
     } catch (error) {
         console.error("Error in goHome:", error);
 
@@ -18,7 +18,7 @@ marketController.goHome = (req: Request, res: Response) => {
 
 marketController.getLogin = (req: Request, res: Response) => {
     try {
-        res.send("You are on LoginPage");
+        res.render("login");
     } catch (error) {
         console.error("Error in getLogin:", error);
 
@@ -27,7 +27,7 @@ marketController.getLogin = (req: Request, res: Response) => {
 
 marketController.getSignup = (req: Request, res: Response) => {
     try {
-        res.send("You are on SignupPage");
+        res.render("signup");
     } catch (error) {
         console.error("Error in getSignup:", error);
 
