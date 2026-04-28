@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { T } from "../libs/types/common";
 import MemberService from "../models/Member.service";
 import { AdminRequest, LoginInput, MemberInput } from "../libs/types/member";
@@ -92,6 +92,16 @@ marketController.checkAuthSession = (req: AdminRequest, res: Response) => {
     } catch (error) {
         console.error("Error in checkAuthSession:", error);
         const message = error instanceof Errors ? error.message : Message.NOT_AUTHENTICATED;
+        res.send(`<script>alert("${message}"); window.location.replace("/admin/login");</script>`);
+    }
+};
+
+marketController.verifyAdmin = (req: AdminRequest, res: Response, next: NextFunction) => {
+    if (req.session?.member?.memberType === MemberType.ADMIN) {
+        req.member = req.session.member;
+        next();
+    } else {
+        const message = Message.NOT_AUTHENTICATED;
         res.send(`<script>alert("${message}"); window.location.replace("/admin/login");</script>`);
     }
 };
