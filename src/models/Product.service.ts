@@ -13,6 +13,14 @@ class ProductService {
     /*** SPA ***/
 
     /*** SSR ***/
+    public async getAllProducts(): Promise<Product[]> {
+        try {
+            return await this.productModel.find().exec();
+        } catch (error) {
+            console.error("Error in getAllProducts:", error);
+            throw new Errors(HttpCode.BAD_REQUEST, Message.NO_DATA_FOUND);
+        }
+    }
 
     public async createNewProduct(input: ProductInput): Promise<Product> {
         try {
