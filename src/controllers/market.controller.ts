@@ -3,6 +3,7 @@ import { T } from "../libs/types/common";
 import MemberService from "../models/Member.service";
 import { AdminRequest, LoginInput, MemberInput } from "../libs/types/member";
 import { MemberType } from "../libs/enums/member.enum";
+import { Message } from "../libs/Error";
 
 const memberService = new MemberService();
 const marketController: T = {};
@@ -69,5 +70,14 @@ marketController.proccesLogin = async (req: AdminRequest, res: Response) => {
     }
 };
 
+marketController.checkAuthSession = (req: AdminRequest, res: Response) => {
+    try {
+        if (req.session?.member) res.send(`Hi, ${req.session.member.memberNick}!`);
+        else res.send(`<script>alert("${Message.NOT_AUTHENTICATED}"); window.location.href = "/admin/login";</script>`);
+    } catch (error) {
+        console.error("Error in checkAuthSession:", error);
+        res.send(error);
+    }
+};
 
 export default marketController;

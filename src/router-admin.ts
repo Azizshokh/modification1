@@ -11,6 +11,7 @@ routerAdmin
     .get("/signup", marketController.getSignup)
     .post("/signup", marketController.proccesSignup);
 
+routerAdmin.get("/check-me", marketController.checkAuthSession);
 
 /*** Product Routes ***/
 /*** User Routes ***/
