@@ -3,7 +3,7 @@ import { T } from "../libs/types/common";
 import MemberService from "../models/Member.service";
 import { AdminRequest, LoginInput, MemberInput } from "../libs/types/member";
 import { MemberType } from "../libs/enums/member.enum";
-import Errors, { Message } from "../libs/Error";
+import Errors, { HttpCode, Message } from "../libs/Error";
 
 const memberService = new MemberService();
 const marketController: T = {};
@@ -38,16 +38,18 @@ marketController.getSignup = (req: Request, res: Response) => {
 marketController.proccesSignup = async (req: AdminRequest, res: Response) => {
     try {
         console.log("proccesSignup");
-        console.log("body:", req.body);
+        const file = req.file;
+        if (!file) throw new Errors(HttpCode.BAD_REQUEST, Message.SOMETHING_WENT_WRONG);
 
         const newMember: MemberInput = req.body;
+        newMember.memberImage = file?.path;
         newMember.memberType = MemberType.ADMIN;
 
         const result = await memberService.proccessSignup(newMember);
         //TODO: SESSIONS Authenticate
         req.session.member = result;
         req.session.save(function () {
-            res.send(result);
+            res.redirect("/admin/product/all");
         });
     } catch (error) {
         console.error("Error in proccesSignup:", error);
@@ -64,7 +66,7 @@ marketController.proccesLogin = async (req: AdminRequest, res: Response) => {
         //TODO: SESSIONS Authenticate
         req.session.member = result;
         req.session.save(function () {
-            res.send(result);
+            res.redirect("/admin/product/all");
         });
     } catch (error) {
         console.error("Error in proccesLogin:", error);
