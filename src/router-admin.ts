@@ -10,7 +10,7 @@ routerAdmin
 routerAdmin
     .get("/signup", marketController.getSignup)
     .post("/signup", marketController.proccesSignup);
-
+routerAdmin.get("/logout", marketController.logout);
 routerAdmin.get("/check-me", marketController.checkAuthSession);
 
 /*** Product Routes ***/

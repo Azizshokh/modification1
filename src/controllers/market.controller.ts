@@ -3,7 +3,7 @@ import { T } from "../libs/types/common";
 import MemberService from "../models/Member.service";
 import { AdminRequest, LoginInput, MemberInput } from "../libs/types/member";
 import { MemberType } from "../libs/enums/member.enum";
-import { Message } from "../libs/Error";
+import Errors, { Message } from "../libs/Error";
 
 const memberService = new MemberService();
 const marketController: T = {};
@@ -13,7 +13,7 @@ marketController.goHome = (req: Request, res: Response) => {
         res.render("home");
     } catch (error) {
         console.error("Error in goHome:", error);
-
+        res.redirect("/admin");
     }
 };
 
@@ -22,7 +22,7 @@ marketController.getLogin = (req: Request, res: Response) => {
         res.render("login");
     } catch (error) {
         console.error("Error in getLogin:", error);
-
+        res.redirect("/admin");
     }
 };
 
@@ -31,7 +31,7 @@ marketController.getSignup = (req: Request, res: Response) => {
         res.render("signup");
     } catch (error) {
         console.error("Error in getSignup:", error);
-
+        res.redirect("/admin");
     }
 };
 
@@ -51,6 +51,8 @@ marketController.proccesSignup = async (req: AdminRequest, res: Response) => {
         });
     } catch (error) {
         console.error("Error in proccesSignup:", error);
+        const message = error instanceof Errors ? error.message : Message.SOMETHING_WENT_WRONG;
+        res.send(`<script>alert("${message}"); window.location.replace("/admin/signup");</script>`);
     }
 };
 
@@ -66,17 +68,31 @@ marketController.proccesLogin = async (req: AdminRequest, res: Response) => {
         });
     } catch (error) {
         console.error("Error in proccesLogin:", error);
-        res.send(error);
+        const message = error instanceof Errors ? error.message : Message.SOMETHING_WENT_WRONG;
+        res.send(`<script>alert("${message}"); window.location.replace("/admin/login");</script>`);
+    }
+};
+
+marketController.logout = (req: AdminRequest, res: Response) => {
+    try {
+        req.session.destroy(function () {
+            res.redirect("/admin/login");
+        });
+    } catch (error) {
+        console.error("Error in logout:", error);
+        const message = error instanceof Errors ? error.message : Message.NOT_AUTHENTICATED;
+        res.redirect("/admin");
     }
 };
 
 marketController.checkAuthSession = (req: AdminRequest, res: Response) => {
     try {
-        if (req.session?.member) res.send(`Hi, ${req.session.member.memberNick}!`);
-        else res.send(`<script>alert("${Message.NOT_AUTHENTICATED}"); window.location.href = "/admin/login";</script>`);
+        if (req.session?.member) res.send(`<script>alert("Hi, ${req.session.member.memberNick}!");</script>`);
+        else res.send(`<script>alert("${Message.NOT_AUTHENTICATED}"); window.location.replace("/admin/login");</script>`);
     } catch (error) {
         console.error("Error in checkAuthSession:", error);
-        res.send(error);
+        const message = error instanceof Errors ? error.message : Message.NOT_AUTHENTICATED;
+        res.send(`<script>alert("${message}"); window.location.replace("/admin/login");</script>`);
     }
 };
 
