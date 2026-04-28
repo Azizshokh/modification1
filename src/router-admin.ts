@@ -2,6 +2,7 @@ import express from "express";
 const routerAdmin = express.Router();
 import marketController from "./controllers/market.controller";
 import productController from "./controllers/product.controller";
+import makeUploader from "./libs/utils/uploader";
 
 /*** Admin Routes ***/
 routerAdmin.get("/", marketController.goHome);
@@ -10,7 +11,11 @@ routerAdmin
     .post("/login", marketController.proccesLogin);
 routerAdmin
     .get("/signup", marketController.getSignup)
-    .post("/signup", marketController.proccesSignup);
+    .post(
+        "/signup",
+        makeUploader("members").single("memberImage"),
+        marketController.proccesSignup
+    );
 routerAdmin.get("/logout", marketController.logout);
 routerAdmin.get("/check-me", marketController.checkAuthSession);
 
@@ -23,6 +28,7 @@ routerAdmin.get(
 routerAdmin.post(
     "/product/create",
     marketController.verifyAdmin,
+    makeUploader("products").array("productImages", 5),
     productController.createNewProduct
 );
 routerAdmin.post(

@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import Errors, { Message } from "../libs/Error";
 import { T } from "../libs/types/common";
-import ProductService from "../models/product.service";
 import { AdminRequest } from "../libs/types/member";
+import ProductService from "../models/Product.service";
 
 const productService = new ProductService();
 const productController: T = {};
@@ -24,6 +24,7 @@ productController.getAllProducts = async (req: AdminRequest, res: Response) => {
 productController.createNewProduct = async (req: Request, res: Response) => {
     try {
         console.log("createNewProduct");
+        res.send("createNewProduct");
     } catch (error) {
         console.error("Error in createNewProduct:", error);
         if (error instanceof Errors) {
