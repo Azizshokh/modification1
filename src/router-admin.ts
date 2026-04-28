@@ -38,5 +38,11 @@ routerAdmin.post(
 );
 
 /*** User Routes ***/
+routerAdmin.get(
+    "/user/all",
+    marketController.verifyAdmin,
+    marketController.getUsers
+);
+
 
 export default routerAdmin;

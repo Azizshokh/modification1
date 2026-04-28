@@ -87,6 +87,27 @@ marketController.logout = (req: AdminRequest, res: Response) => {
     }
 };
 
+marketController.getUsers = async (req: Request, res: Response) => {
+    try {
+        console.log("getUsers");
+        const result = await memberService.getUsers();
+
+        res.render("users", { users: result });
+    } catch (error) {
+        console.error("Error in getUsers:", error);
+        res.redirect("/admin/login");
+    }
+};
+
+marketController.updateChosenUser = (req: Request, res: Response) => {
+    try {
+        console.log("updateChosenUser");
+    } catch (error) {
+        console.error("Error in updateChosenUser:", error);
+        res.redirect("/admin");
+    }
+};
+
 marketController.checkAuthSession = (req: AdminRequest, res: Response) => {
     try {
         if (req.session?.member) res.send(`<script>alert("Hi, ${req.session.member.memberNick}!");</script>`);
