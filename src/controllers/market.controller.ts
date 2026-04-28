@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { T } from "../libs/types/common";
 import MemberService from "../models/Member.service";
-import { LoginInput, MemberInput } from "../libs/types/member";
+import { AdminRequest, LoginInput, MemberInput } from "../libs/types/member";
 import { MemberType } from "../libs/enums/member.enum";
 
 const memberService = new MemberService();
@@ -34,7 +34,7 @@ marketController.getSignup = (req: Request, res: Response) => {
     }
 };
 
-marketController.proccesSignup = async (req: Request, res: Response) => {
+marketController.proccesSignup = async (req: AdminRequest, res: Response) => {
     try {
         console.log("proccesSignup");
         console.log("body:", req.body);
@@ -44,21 +44,25 @@ marketController.proccesSignup = async (req: Request, res: Response) => {
 
         const result = await memberService.proccessSignup(newMember);
         //TODO: SESSIONS Authenticate
-
-        res.send(result);
+        req.session.member = result;
+        req.session.save(function () {
+            res.send(result);
+        });
     } catch (error) {
         console.error("Error in proccesSignup:", error);
     }
 };
 
-marketController.proccesLogin = async (req: Request, res: Response) => {
+marketController.proccesLogin = async (req: AdminRequest, res: Response) => {
     try {
         const input: LoginInput = req.body;
         const result = await memberService.proccessLogin(input);
 
         //TODO: SESSIONS Authenticate
-
-        res.send(result);
+        req.session.member = result;
+        req.session.save(function () {
+            res.send(result);
+        });
     } catch (error) {
         console.error("Error in proccesLogin:", error);
         res.send(error);
