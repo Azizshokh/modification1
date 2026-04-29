@@ -1,7 +1,85 @@
-<%- include('includes/header') %>
+<!DOCTYPE html>
+<html lang="en">
 
-    <body>
-        <div>USERS</div>
-    </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PetFood Admin — Users</title>
+  <link rel="icon" type="image/png" href="/img/favicon.png" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
 
-    <%- include('includes/footer') %>
+<body>
+  <div class="shell">
+
+    <%- include('partials/sidebar', { page: 'users' }) %>
+
+      <main class="main">
+        <div class="topbar">
+          <div class="topbar-title">User Management</div>
+        </div>
+
+        <div class="page-content">
+          <div class="section-header">
+            <span class="section-title">All Registered Users</span>
+            <div style="font-size:13px; color:#6e8e8e">
+              <%= users.length %> total users
+            </div>
+          </div>
+
+          <div class="table-card">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>Phone</th>
+                  <th>Joined</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% users.forEach((u, i)=> { %>
+                  <tr>
+                    <td>
+                      <%= i + 1 %>
+                    </td>
+                    <td>
+                      <div style="display:flex;align-items:center;gap:10px">
+                        <div
+                          style="width:30px;height:30px;border-radius:50%;background:var(--teal-pale);color:var(--teal);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600">
+                          <%= (u.memberNick || '?' ).slice(0, 2).toUpperCase() %>
+                        </div>
+                        <%= u.memberNick %>
+                      </div>
+                    </td>
+                    <td>
+                      <%= u.memberPhone %>
+                    </td>
+                    <td>
+                      <%= new Date(u.createdAt).toLocaleDateString('en-US', { month: 'short' , day: 'numeric' ,
+                        year: 'numeric' }) %>
+                    </td>
+                    <td>
+                      <form action="/admin/user/edit" method="POST" style="display:inline">
+                        <input type="hidden" name="_id" value="<%= u._id %>" />
+                        <select class="status-select" name="memberStatus" onchange="this.form.submit()">
+                          <option value="ACTIVE" <%=u.memberStatus==='ACTIVE' ? 'selected' : '' %>>ACTIVE</option>
+                          <option value="BLOCKED" <%=u.memberStatus==='BLOCKED' ? 'selected' : '' %>>BLOCKED</option>
+                          <option value="DELETED" <%=u.memberStatus==='DELETED' ? 'selected' : '' %>>DELETED</option>
+                        </select>
+                      </form>
+                    </td>
+                  </tr>
+                  <% }) %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+
+  </div>
+  <script src="/js/main.js"></script>
+</body>
+
+</html>

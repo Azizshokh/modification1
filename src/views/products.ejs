@@ -1,10 +1,198 @@
-<%- include('includes/header') %>
+<!DOCTYPE html>
+<html lang="en">
 
-    <body>
-        <div>PRODUCT</div>
-        <div>
-            <%=member.memberNick%>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PetFood Admin — Products</title>
+  <link rel="icon" type="image/png" href="/img/favicon.png" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+
+<body>
+  <div class="shell">
+
+    <%- include('partials/sidebar', { page: 'products' }) %>
+
+      <main class="main">
+        <div class="topbar">
+          <div class="topbar-title">Products</div>
+          <div class="topbar-actions">
+            <button class="btn-primary" id="toggle-form-btn" onclick="toggleProductForm()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              New Product
+            </button>
+          </div>
         </div>
-    </body>
 
-    <%- include('includes/footer') %>
+        <div class="page-content">
+
+          <!-- Product Table -->
+          <div class="section-header">
+            <span class="section-title">All Products</span>
+            <div class="tabs">
+              <button class="tab-btn active" type="button" data-filter="ALL">All (<%= products.length %>)</button>
+              <button class="tab-btn" type="button" data-filter="PROCESS">
+                Active (<%= products.filter((product)=> product.productStatus === 'PROCESS').length %>)
+              </button>
+              <button class="tab-btn" type="button" data-filter="PAUSE">
+                Paused (<%= products.filter((product)=> product.productStatus === 'PAUSE').length %>)
+              </button>
+            </div>
+          </div>
+
+          <div class="table-card" style="margin-bottom:28px">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Product Name</th>
+                  <th>Category</th>
+                  <th>Size/Weight</th>
+                  <th>Price</th>
+                  <th>Stock</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="products-table-body">
+                <% products.forEach((p, i)=> { %>
+                  <tr data-status="<%= p.productStatus %>">
+                    <td>
+                      <%= i + 1 %>
+                    </td>
+                    <td>
+                      <%= p.productName %>
+                    </td>
+                    <td>
+                      <%= p.productCollection %>
+                    </td>
+                    <td>
+                      <%= p.productCollection==='GADGETS' ? (p.productSize || '-' ) : (p.productWeight>= 1000 ?
+                        (p.productWeight / 1000) + ' KG' : p.productWeight + ' G') %>
+                    </td>
+                    <td>$<%= p.productPrice %>
+                    </td>
+                    <td>
+                      <%= p.productLeftCount %>
+                    </td>
+                    <td>
+                      <form action="/admin/product/<%= p._id %>" method="POST" style="display:inline">
+                        <select class="status-select" name="productStatus" onchange="this.form.submit()">
+                          <option value="PROCESS" <%=p.productStatus==='PROCESS' ? 'selected' : '' %>>PROCESS</option>
+                          <option value="PAUSE" <%=p.productStatus==='PAUSE' ? 'selected' : '' %>>PAUSE</option>
+                          <option value="DELETED" <%=p.productStatus==='DELETED' ? 'selected' : '' %>>DELETED</option>
+                        </select>
+                      </form>
+                    </td>
+                  </tr>
+                  <% }) %>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- New Product Form (hidden by default) -->
+          <div id="product-form-section" style="display:none">
+            <div class="section-header">
+              <span class="section-title">New Product Details</span>
+              <button class="btn-danger" onclick="toggleProductForm()">Cancel</button>
+            </div>
+            <div class="form-card">
+              <form action="/admin/product/create" method="POST" enctype="multipart/form-data">
+                <div class="form-grid">
+                  <div class="form-group full">
+                    <label class="form-label">Product Name</label>
+                    <input class="form-input" name="productName" placeholder="e.g. Royal Canin Puppy Mix" required />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Price ($)</label>
+                    <input class="form-input" name="productPrice" type="number" step="0.01" placeholder="0.00"
+                      required />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Stock Count</label>
+                    <input class="form-input" name="productLeftCount" type="number" placeholder="0" required />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select class="form-select" name="productCollection" id="product-collection-select">
+                      <option value="DOG">Dog</option>
+                      <option value="CAT">Cat</option>
+                      <option value="BIRD">Bird</option>
+                      <option value="FISH">Fish</option>
+                      <option value="GADGETS">Gadgets</option>
+                    </select>
+                  </div>
+                  <div class="form-group" id="weight-field">
+                    <label class="form-label">Weight</label>
+                    <select class="form-select" name="productWeight" id="product-weight-select">
+                      <option value="300">300 G</option>
+                      <option value="500" selected>500 G</option>
+                      <option value="1000">1 KG</option>
+                      <option value="2500">2.5 KG</option>
+                    </select>
+                  </div>
+                  <div class="form-group" id="size-field" style="display:none">
+                    <label class="form-label">Size</label>
+                    <select class="form-select" name="productSize" id="product-size-select" disabled>
+                      <option value="SMALL">Small</option>
+                      <option value="NORMAL" selected>Normal</option>
+                      <option value="LARGE">Large</option>
+                      <option value="SET">Set</option>
+                    </select>
+                  </div>
+                  <div class="form-group full">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-textarea" name="productDesc"
+                      placeholder="Describe the product, ingredients, benefits..."></textarea>
+                  </div>
+                  <div class="form-group full">
+                    <label class="form-label">Product Images (up to 5)</label>
+                    <div class="upload-grid">
+                      <div class="upload-box">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round">
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                          <polyline points="17 8 12 3 7 8" />
+                          <line x1="12" y1="3" x2="12" y2="15" />
+                        </svg>
+                        <span>Upload</span>
+                        <input type="file" name="productImages" accept=".jpg,.jpeg,.png" multiple
+                          style="position:absolute;inset:0;opacity:0;cursor:pointer" />
+                      </div>
+                      <div class="upload-box"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5">
+                          <line x1="12" y1="5" x2="12" y2="19" />
+                          <line x1="5" y1="12" x2="19" y2="12" />
+                        </svg></div>
+                      <div class="upload-box"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5">
+                          <line x1="12" y1="5" x2="12" y2="19" />
+                          <line x1="5" y1="12" x2="19" y2="12" />
+                        </svg></div>
+                      <div class="upload-box"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5">
+                          <line x1="12" y1="5" x2="12" y2="19" />
+                          <line x1="5" y1="12" x2="19" y2="12" />
+                        </svg></div>
+                      <div class="upload-box"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5">
+                          <line x1="12" y1="5" x2="12" y2="19" />
+                          <line x1="5" y1="12" x2="19" y2="12" />
+                        </svg></div>
+                    </div>
+                  </div>
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:24px">
+                  <button type="button" class="btn-ghost" onclick="toggleProductForm()">Cancel</button>
+                  <button type="submit" class="btn-primary">Create Product</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+        </div>
+      </main>
+
+  </div>
+  <script src="/js/main.js"></script>
+</body>
+
+</html>

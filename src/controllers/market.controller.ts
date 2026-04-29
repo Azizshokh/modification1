@@ -1,16 +1,38 @@
 import { NextFunction, Request, Response } from "express";
 import { T } from "../libs/types/common";
 import MemberService from "../models/Member.service";
+import ProductService from "../models/Product.service";
 import { AdminRequest, LoginInput, MemberInput, MemberUpdateInput } from "../libs/types/member";
 import { MemberType } from "../libs/enums/member.enum";
+import { ProductStatus } from "../libs/enums/product.enum";
 import Errors, { HttpCode, Message } from "../libs/Error";
 
 const memberService = new MemberService();
+const productService = new ProductService();
 const marketController: T = {};
-marketController.goHome = (req: Request, res: Response) => {
+marketController.goHome = async (req: Request, res: Response) => {
     try {
         console.log("goHome");
-        res.render("home");
+        const [products, users] = await Promise.all([
+            productService.getAllProducts(),
+            memberService.getUsers(),
+        ]);
+
+        const recentProducts = products
+            .sort((firstProduct, secondProduct) => {
+                return new Date(secondProduct.createdAt).getTime() - new Date(firstProduct.createdAt).getTime();
+            })
+            .slice(0, 5);
+
+        res.render("index", {
+            stats: {
+                totalProducts: products.length,
+                totalUsers: users.length,
+                activeListings: products.filter((product) => product.productStatus === ProductStatus.PROCESS).length,
+                pausedItems: products.filter((product) => product.productStatus === ProductStatus.PAUSE).length,
+            },
+            recentProducts,
+        });
     } catch (error) {
         console.error("Error in goHome:", error);
         res.redirect("/admin");
@@ -49,7 +71,7 @@ marketController.proccesSignup = async (req: AdminRequest, res: Response) => {
         //TODO: SESSIONS Authenticate
         req.session.member = result;
         req.session.save(function () {
-            res.redirect("/admin/product/all");
+            res.redirect("/admin");
         });
     } catch (error) {
         console.error("Error in proccesSignup:", error);
@@ -66,7 +88,7 @@ marketController.proccesLogin = async (req: AdminRequest, res: Response) => {
         //TODO: SESSIONS Authenticate
         req.session.member = result;
         req.session.save(function () {
-            res.redirect("/admin/product/all");
+            res.redirect("/admin");
         });
     } catch (error) {
         console.error("Error in proccesLogin:", error);

@@ -1,5 +1,6 @@
 import express from "express";
 import path from "path";
+import fs from "fs";
 import router from "./router";
 import routerAdmin from "./router-admin";
 import morgan from "morgan";
@@ -15,9 +16,18 @@ const store = new MongoDBStore({
     collection: "sessions",
 });
 
+const resolveAppPath = (...segments: string[]): string => {
+    const projectRootPath = path.resolve(process.cwd(), "src", ...segments);
+    if (fs.existsSync(projectRootPath)) {
+        return projectRootPath;
+    }
+
+    return path.join(__dirname, ...segments);
+};
+
 /*** 1-Entrance ***/
 const app = express();
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(resolveAppPath("public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(morgan(MORGAN_FORMAT));
@@ -42,7 +52,7 @@ app.use(function (req, res, next) {
 });
 
 /*** 3-Views ***/
-app.set("views", path.join(__dirname, "views"));
+app.set("views", resolveAppPath("views"));
 app.set("view engine", "ejs");
 
 /*** 4-Routers ***/

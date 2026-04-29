@@ -1,7 +1,109 @@
-<%- include('includes/header') %>
+<!DOCTYPE html>
+<html lang="en">
 
-    <body>
-        <div>SIGNUP</div>
-    </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PetFood Admin — Sign Up</title>
+  <link rel="icon" type="image/png" href="/img/favicon.png" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
 
-    <%- include('includes/footer') %>
+<body>
+
+  <div class="auth-page">
+    <!-- Left decorative side -->
+    <div class="auth-left">
+      <div class="auth-art">
+        <div class="auth-brand">
+          <img class="auth-brand-logo" src="/img/favicon.png" alt="PetFood logo" />
+          <div class="auth-brand-copy">
+            <div class="auth-brand-name">Pet<span>Food</span></div>
+            <div class="auth-brand-note">Create your admin space and start managing faster.</div>
+          </div>
+        </div>
+        <div class="auth-art-circles">
+          <div class="auth-circle ac1"></div>
+          <div class="auth-circle ac2"></div>
+          <div class="auth-circle ac3"></div>
+          <div class="auth-paw">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M12 2C7 2 3 6 3 11c0 2.4 1 4.6 2.6 6.2L12 22l6.4-4.8C20 15.6 21 13.4 21 11c0-5-4-9-9-9zm-3 8c-.6 0-1.5-.9-1.5-2s.9-1.5 1.5-1.5 1.5.9 1.5 2S9.6 10 9 10zm3 5c-1.7 0-3-1.3-3-3h6c0 1.7-1.3 3-3 3zm3-5c-.6 0-1.5-.9-1.5-2S14.4 6.5 15 6.5s1.5.9 1.5 2-.9 1.5-1.5 1.5z"
+                fill="#9FC87E" />
+            </svg>
+          </div>
+        </div>
+        <div class="auth-left-title">Join PetFood</div>
+        <div class="auth-left-sub">Start managing your pet food<br>restaurant today.</div>
+      </div>
+    </div>
+
+    <!-- Right form side -->
+    <div class="auth-right">
+      <div class="auth-form" style="max-width:440px">
+        <div class="auth-form-tag">
+          <span class="auth-form-tag-icon">🐾</span>
+          <span class="auth-form-tag-text">New Account</span>
+        </div>
+        <div class="auth-form-title">Create Account</div>
+        <div class="auth-form-sub">Already have an account? <a href="/admin/login">Sign in</a></div>
+
+        <% if (typeof error !=='undefined' && error) { %>
+          <div
+            style="background:var(--red-pale);color:var(--red);padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:16px">
+            <%= error %>
+          </div>
+          <% } %>
+
+            <form action="/admin/signup" method="POST" enctype="multipart/form-data">
+              <div class="form-grid" style="margin-bottom:16px">
+                <div class="form-group">
+                  <label class="form-label">Restaurant Name</label>
+                  <input class="form-input" name="memberNick" placeholder="Username" required />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Phone</label>
+                  <input class="form-input" type="tel" name="memberPhone" placeholder="+1 000-0000" required />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Password</label>
+                  <input class="form-input" type="password" name="memberPassword" placeholder="Password" required />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Confirm Password</label>
+                  <input class="form-input" type="password" name="confirmPassword" placeholder="Repeat password"
+                    required />
+                </div>
+              </div>
+
+              <div class="form-group signup-media-group">
+                <label class="form-label">Restaurant Image</label>
+                <div class="signup-file-row">
+                  <input class="form-input signup-file-name" id="file-name" placeholder="Choose image..." readonly />
+                  <label class="signup-file-button">
+                    Upload Image
+                    <input type="file" name="memberImage" accept=".jpg,.jpeg,.png" style="display:none"
+                      onchange="document.getElementById('file-name').value = this.files[0]?.name || ''" />
+                  </label>
+                </div>
+                <div class="signup-file-hint">Only .jpg, .jpeg, or .png formats allowed.
+                </div>
+              </div>
+
+              <button type="submit" class="btn-primary"
+                style="width:100%;justify-content:center;padding:13px;font-size:15px">
+                Create Account
+              </button>
+            </form>
+
+            <div style="text-align:center;margin-top:16px">
+              <a href="/admin" style="color:var(--teal);text-decoration:none;font-size:13px">← Back to Dashboard</a>
+            </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>

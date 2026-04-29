@@ -1,6 +1,84 @@
-<%- include('includes/header') %>
+<!DOCTYPE html>
+<html lang="en">
 
-    <body>
-        <div>LOGIN</div>
-    </body>
-    <%- include('includes/footer') %>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PetFood Admin — Login</title>
+  <link rel="icon" type="image/png" href="/img/favicon.png" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+
+<body>
+
+  <div class="auth-page">
+    <!-- Left decorative side -->
+    <div class="auth-left">
+      <div class="auth-art">
+        <div class="auth-brand">
+          <img class="auth-brand-logo" src="/img/favicon.png" alt="PetFood logo" />
+          <div class="auth-brand-copy">
+            <div class="auth-brand-name">Pet<span>Food</span></div>
+            <div class="auth-brand-note">Smart market control for premium pet care.</div>
+          </div>
+        </div>
+        <div class="auth-art-circles">
+          <div class="auth-circle ac1"></div>
+          <div class="auth-circle ac2"></div>
+          <div class="auth-circle ac3"></div>
+          <div class="auth-paw">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M12 2C7 2 3 6 3 11c0 2.4 1 4.6 2.6 6.2L12 22l6.4-4.8C20 15.6 21 13.4 21 11c0-5-4-9-9-9zm-3 8c-.6 0-1.5-.9-1.5-2s.9-1.5 1.5-1.5 1.5.9 1.5 2S9.6 10 9 10zm3 5c-1.7 0-3-1.3-3-3h6c0 1.7-1.3 3-3 3zm3-5c-.6 0-1.5-.9-1.5-2S14.4 6.5 15 6.5s1.5.9 1.5 2-.9 1.5-1.5 1.5z"
+                fill="#9FC87E" />
+            </svg>
+          </div>
+        </div>
+        <div class="auth-left-title">Welcome Back</div>
+        <div class="auth-left-sub">Manage your pet food store with<br>the admin panel designed for you.</div>
+      </div>
+    </div>
+
+    <!-- Right form side -->
+    <div class="auth-right">
+      <div class="auth-form">
+        <div class="auth-form-tag">
+          <span class="auth-form-tag-icon">🐾</span>
+          <span class="auth-form-tag-text">Admin Portal</span>
+        </div>
+        <div class="auth-form-title">Sign In</div>
+        <div class="auth-form-sub">Don't have an account? <a href="/admin/signup">Sign up here</a></div>
+
+        <% if (typeof error !=='undefined' && error) { %>
+          <div
+            style="background:var(--red-pale);color:var(--red);padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:16px">
+            <%= error %>
+          </div>
+          <% } %>
+
+            <form action="/admin/login" method="POST">
+              <div class="form-group" style="margin-bottom:16px">
+                <label class="form-label">Restaurant / Username</label>
+                <input class="form-input" name="memberNick" placeholder="Enter your username" required />
+              </div>
+              <div class="form-group" style="margin-bottom:24px">
+                <label class="form-label">Password</label>
+                <input class="form-input" type="password" name="memberPassword" placeholder="Enter your password"
+                  required />
+              </div>
+              <button type="submit" class="btn-primary"
+                style="width:100%;justify-content:center;padding:13px;font-size:15px">
+                Sign In
+              </button>
+            </form>
+
+            <div style="text-align:center;margin-top:16px;font-size:13px;color:#6e8e8e">
+              <a href="/admin" style="color:var(--teal);text-decoration:none">← Back to Dashboard</a>
+            </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>
