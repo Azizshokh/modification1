@@ -453,6 +453,24 @@ tbody tr:last-child td { border-bottom: none; }
 .upload-box:hover svg { stroke: var(--teal); }
 .upload-box span { font-size: 10px; color: #9ababa; }
 .upload-box:hover span { color: var(--teal); }
+.upload-box img.slot-preview {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+  pointer-events: none;
+}
+.upload-box.has-image svg,
+.upload-box.has-image span {
+  display: none;
+}
+.upload-box.has-image {
+  border-style: solid;
+  border-color: var(--teal);
+}
 
 /* ── AUTH PAGES ── */
 .auth-page {
@@ -618,6 +636,15 @@ tbody tr:last-child td { border-bottom: none; }
 .auth-form-sub a { color: var(--teal); text-decoration: none; font-weight: 500; }
 
 .signup-media-group { margin-bottom: 24px; }
+.signup-media-layout {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.signup-media-controls {
+  flex: 1;
+  min-width: 0;
+}
 .signup-file-row {
   display: flex;
   gap: 0;
@@ -645,6 +672,53 @@ tbody tr:last-child td { border-bottom: none; }
   font-size: 11px;
   color: #9ababa;
   margin-top: 6px;
+}
+.signup-image-preview {
+  width: 124px;
+  height: 124px;
+  border-radius: 10px;
+  border: 1px solid #d9e9e9;
+  background: #f7fbfb;
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+}
+.signup-image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none;
+}
+.signup-image-preview.has-image img {
+  display: block;
+}
+.signup-image-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 11px;
+  color: #8da7a7;
+  padding: 8px;
+  border: 1px dashed #c7dddd;
+  border-radius: 10px;
+  margin: 6px;
+}
+.signup-image-preview.has-image .signup-image-placeholder {
+  display: none;
+}
+
+@media (max-width: 560px) {
+  .signup-media-layout {
+    flex-direction: column;
+  }
+
+  .signup-image-preview {
+    width: 100%;
+    max-width: 180px;
+  }
 }
 
 /* ── TOGGLE SWITCH ── */

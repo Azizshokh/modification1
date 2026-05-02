@@ -80,15 +80,26 @@
 
               <div class="form-group signup-media-group">
                 <label class="form-label">Owner Image</label>
-                <div class="signup-file-row">
-                  <input class="form-input signup-file-name" id="file-name" placeholder="Choose image..." readonly />
-                  <label class="signup-file-button">
-                    Upload Image
-                    <input type="file" name="memberImage" accept=".jpg,.jpeg,.png" style="display:none"
-                      onchange="document.getElementById('file-name').value = this.files[0]?.name || ''" />
-                  </label>
-                </div>
-                <div class="signup-file-hint">Only .jpg, .jpeg, or .png formats allowed.
+                <div class="signup-media-layout">
+                  <div class="signup-media-controls">
+                    <div class="signup-file-row">
+                      <input class="form-input signup-file-name" id="file-name" placeholder="Choose image..."
+                        readonly />
+                      <label class="signup-file-button">
+                        Upload Image
+                        <input id="member-image-input" type="file" name="memberImage" accept=".jpg,.jpeg,.png"
+                          style="display:none" />
+                      </label>
+                    </div>
+                    <div class="signup-file-hint">Please upload admin photo... <br> Attention only: .jpg, .jpeg, or .png
+                      formats allowed!!!
+                    </div>
+                  </div>
+
+                  <div class="signup-image-preview" id="signup-image-preview">
+                    <img id="signup-image-preview-img" src="" alt="Selected owner preview" />
+                    <div class="signup-image-placeholder" id="signup-image-placeholder">Image Preview</div>
+                  </div>
                 </div>
               </div>
 
