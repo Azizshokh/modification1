@@ -79,13 +79,11 @@
                       <%= p.productLeftCount %>
                     </td>
                     <td>
-                      <form action="/admin/product/<%= p._id %>" method="POST" style="display:inline">
-                        <select class="status-select" name="productStatus" onchange="this.form.submit()">
-                          <option value="PROCESS" <%=p.productStatus==='PROCESS' ? 'selected' : '' %>>PROCESS</option>
-                          <option value="PAUSE" <%=p.productStatus==='PAUSE' ? 'selected' : '' %>>PAUSE</option>
-                          <option value="DELETED" <%=p.productStatus==='DELETED' ? 'selected' : '' %>>DELETED</option>
-                        </select>
-                      </form>
+                      <select class="status-select" data-id="<%= p._id %>">
+                        <option value="PROCESS" <%=p.productStatus==='PROCESS' ? 'selected' : '' %>>PROCESS</option>
+                        <option value="PAUSE" <%=p.productStatus==='PAUSE' ? 'selected' : '' %>>PAUSE</option>
+                        <option value="DELETED" <%=p.productStatus==='DELETED' ? 'selected' : '' %>>DELETED</option>
+                      </select>
                     </td>
                   </tr>
                   <% }) %>
@@ -203,6 +201,7 @@
       </main>
 
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script src="/js/main.js"></script>
 </body>
 

@@ -317,13 +317,31 @@ tbody tr:last-child td { border-bottom: none; }
   border-radius: 8px;
   padding: 5px 10px;
   font-size: 12px;
+  font-weight: 600;
   font-family: 'DM Sans', sans-serif;
   color: var(--teal-dark);
   background: white;
   cursor: pointer;
   outline: none;
+  transition: background .15s, color .15s, border-color .15s;
 }
 .status-select:focus { border-color: var(--teal); }
+
+.status-select.status-process {
+  background: #e6f7f1;
+  color: #1a7a4a;
+  border-color: #2ecc71;
+}
+.status-select.status-pause {
+  background: #fff4e0;
+  color: #7a4a00;
+  border-color: #c8820a;
+}
+.status-select.status-deleted {
+  background: #fdecea;
+  color: #b52a1e;
+  border-color: #e05a50;
+}
 
 /* ── TABS ── */
 .tabs { display: flex; gap: 4px; margin-bottom: 24px; }
