@@ -91,5 +91,42 @@ document.addEventListener('DOMContentLoaded', () => {
     syncProductMeasurementFields();
   }
 
+  const phoneInputs = document.querySelectorAll('input[name="memberPhone"]');
+  phoneInputs.forEach((phoneInput) => {
+    phoneInput.addEventListener('input', () => {
+      let sanitizedValue = phoneInput.value.replace(/[^\d+]/g, '');
+      sanitizedValue = sanitizedValue.replace(/(?!^)\+/g, '');
+
+      if (sanitizedValue !== phoneInput.value) {
+        phoneInput.value = sanitizedValue;
+      }
+    });
+  });
+
+  const signupForm = document.querySelector('form[action="/admin/signup"]');
+  if (signupForm) {
+    signupForm.addEventListener('submit', (event) => {
+      const phoneInput = signupForm.querySelector('input[name="memberPhone"]');
+      const passwordInput = signupForm.querySelector('input[name="memberPassword"]');
+      const confirmInput = signupForm.querySelector('input[name="confirmPassword"]');
+
+      if (!phoneInput || !passwordInput || !confirmInput) {
+        return;
+      }
+
+      const validPhonePattern = /^\+?\d{7,15}$/;
+      if (!validPhonePattern.test(phoneInput.value)) {
+        event.preventDefault();
+        alert('Phone number is invalid, please check!!!');
+        return;
+      }
+
+      if (passwordInput.value !== confirmInput.value) {
+        event.preventDefault();
+        alert('Password differs, please check!!!');
+      }
+    });
+  }
+
   filterProductRows('ALL');
 });
