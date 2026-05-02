@@ -342,6 +342,16 @@ tbody tr:last-child td { border-bottom: none; }
   color: #b52a1e;
   border-color: #e05a50;
 }
+.status-select.status-active {
+  background: #e6f7f1;
+  color: #1a7a4a;
+  border-color: #2ecc71;
+}
+.status-select.status-blocked {
+  background: #fff0e8;
+  color: #8a3800;
+  border-color: #e07030;
+}
 
 /* ── TABS ── */
 .tabs { display: flex; gap: 4px; margin-bottom: 24px; }

@@ -61,14 +61,11 @@
                         year: 'numeric' }) %>
                     </td>
                     <td>
-                      <form action="/admin/user/edit" method="POST" style="display:inline">
-                        <input type="hidden" name="_id" value="<%= u._id %>" />
-                        <select class="status-select" name="memberStatus" onchange="this.form.submit()">
-                          <option value="ACTIVE" <%=u.memberStatus==='ACTIVE' ? 'selected' : '' %>>ACTIVE</option>
-                          <option value="BLOCKED" <%=u.memberStatus==='BLOCKED' ? 'selected' : '' %>>BLOCKED</option>
-                          <option value="DELETED" <%=u.memberStatus==='DELETED' ? 'selected' : '' %>>DELETED</option>
-                        </select>
-                      </form>
+                      <select class="status-select" data-id="<%= u._id %>" data-type="user">
+                        <option value="ACTIVE" <%=u.memberStatus==='ACTIVE' ? 'selected' : '' %>>ACTIVE</option>
+                        <option value="BLOCKED" <%=u.memberStatus==='BLOCKED' ? 'selected' : '' %>>BLOCKED</option>
+                        <option value="DELETED" <%=u.memberStatus==='DELETED' ? 'selected' : '' %>>DELETED</option>
+                      </select>
                     </td>
                   </tr>
                   <% }) %>
@@ -79,6 +76,7 @@
       </main>
 
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script src="/js/main.js"></script>
 </body>
 
