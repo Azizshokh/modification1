@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initProductTabs();
     initProductStatusColors();
     filterProductRows('ALL');
+    initProductImageUpload();
 
     const collectionSelect = document.getElementById('product-collection-select');
     if (collectionSelect) {
