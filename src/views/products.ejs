@@ -41,6 +41,9 @@
               <button class="tab-btn" type="button" data-filter="PAUSE">
                 Paused (<%= products.filter((product)=> product.productStatus === 'PAUSE').length %>)
               </button>
+              <button class="tab-btn" type="button" data-filter="DELETED">
+                Deleted (<%= products.filter((product)=> product.productStatus === 'DELETED').length %>)
+              </button>
             </div>
           </div>
 
@@ -202,7 +205,11 @@
 
   </div>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <script src="/js/main.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/member.js"></script>
+  <script src="/js/product.js"></script>
+  <script src="/js/form.js"></script>
+  <script src="/js/init.js"></script>
 </body>
 
 </html>
