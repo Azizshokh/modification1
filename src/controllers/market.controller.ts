@@ -114,7 +114,14 @@ marketController.getUsers = async (req: Request, res: Response) => {
         console.log("getUsers");
         const result = await memberService.getUsers();
 
-        res.render("users", { users: result });
+        const stats = {
+            totalUsers: result.length,
+            activeUsers: result.filter((u) => u.memberStatus === 'ACTIVE').length,
+            blockedUsers: result.filter((u) => u.memberStatus === 'BLOCKED').length,
+            deletedUsers: result.filter((u) => u.memberStatus === 'DELETED').length,
+        };
+
+        res.render("users", { users: result, stats });
     } catch (error) {
         console.error("Error in getUsers:", error);
         res.redirect("/admin/login");

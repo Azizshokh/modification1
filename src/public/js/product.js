@@ -1,80 +1,149 @@
+// ============================================================
+//  product.js — Mahsulot bilan bog'liq funksiyalar
+// ============================================================
+
+/**
+ * Products jadvalidagi tab tugmalarining sonlarini yangilaydi
+ * (All, Active/Process, Paused, Deleted)
+ */
 function updateTabCounts() {
     const allRows = document.querySelectorAll('#products-table-body tr[data-status]');
-    const total = allRows.length;
-    const processCount = Array.from(allRows).filter((r) => r.dataset.status === 'PROCESS').length;
-    const pauseCount = Array.from(allRows).filter((r) => r.dataset.status === 'PAUSE').length;
 
-    document.querySelectorAll('.tab-btn').forEach((btn) => {
-        const filter = btn.dataset.filter;
-        if (filter === 'ALL') btn.textContent = `All (${total})`;
-        else if (filter === 'PROCESS') btn.textContent = `Active (${processCount})`;
-        else if (filter === 'PAUSE') btn.textContent = `Paused (${pauseCount})`;
-        else if (filter === 'DELETED') btn.textContent = `Deleted (${Array.from(allRows).filter((r) => r.dataset.status === 'DELETED').length})`;
+    let processCount = 0;
+    let pauseCount = 0;
+    let deletedCount = 0;
+
+    allRows.forEach(function (row) {
+        const status = row.dataset.status;
+        if (status === 'PROCESS') processCount++;
+        if (status === 'PAUSE') pauseCount++;
+        if (status === 'DELETED') deletedCount++;
+    });
+
+    const total = allRows.length;
+
+    // Tab tugmalarini yangilash
+    const tabButtons = document.querySelectorAll('.tab-btn[data-filter]');
+    tabButtons.forEach(function (button) {
+        const filter = button.dataset.filter;
+
+        if (filter === 'ALL') button.textContent = 'All (' + total + ')';
+        if (filter === 'PROCESS') button.textContent = 'Active (' + processCount + ')';
+        if (filter === 'PAUSE') button.textContent = 'Paused (' + pauseCount + ')';
+        if (filter === 'DELETED') button.textContent = 'Deleted (' + deletedCount + ')';
     });
 }
 
+/**
+ * Products jadval qatorlarini status bo'yicha filtirlaydi
+ * Ko'rinadigan qatorlarni qayta raqamlaydi (1, 2, 3...)
+ * @param {string} status - Filter qiymati: 'ALL' | 'PROCESS' | 'PAUSE' | 'DELETED'
+ */
 function filterProductRows(status) {
-    const productRows = document.querySelectorAll('#products-table-body tr[data-status]');
-    if (!productRows.length) return;
+    const allRows = document.querySelectorAll('#products-table-body tr[data-status]');
+    if (!allRows.length) return;
 
     let visibleIndex = 0;
-    productRows.forEach((row) => {
-        const matchesFilter = status === 'ALL' || row.dataset.status === status;
-        row.style.display = matchesFilter ? '' : 'none';
 
-        if (!matchesFilter) return;
+    allRows.forEach(function (row) {
+        // Ushbu qator ko'rinadimi?
+        const isVisible = (status === 'ALL') || (row.dataset.status === status);
 
-        visibleIndex += 1;
-        const numberCell = row.querySelector('td');
-        if (numberCell) numberCell.textContent = String(visibleIndex);
+        if (isVisible) {
+            row.style.display = '';          // Ko'rsat
+            visibleIndex++;
+
+            // Birinchi ustundagi raqamni yangilash
+            const firstCell = row.querySelector('td');
+            if (firstCell) firstCell.textContent = String(visibleIndex);
+
+        } else {
+            row.style.display = 'none';      // Yashir
+        }
     });
 }
 
+/**
+ * Products tab tugmalarini ishga tushiradi
+ * Tugma bosilganda aktiv class o'tadi va filtr ishga tushadi
+ */
 function initProductTabs() {
-    document.querySelectorAll('.tab-btn').forEach((tabButton) => {
-        tabButton.addEventListener('click', () => {
-            const tabsContainer = tabButton.closest('.tabs');
+    const tabButtons = document.querySelectorAll('.tab-btn[data-filter]');
+
+    tabButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            // Faqat shu button'ning container'idagi tablarni boshqarish
+            const tabsContainer = button.closest('.tabs');
             if (!tabsContainer) return;
 
-            tabsContainer.querySelectorAll('.tab-btn').forEach((button) => button.classList.remove('active'));
-            tabButton.classList.add('active');
-            filterProductRows(tabButton.dataset.filter || 'ALL');
+            // Barcha tablardan active classini olib tashlash
+            tabsContainer.querySelectorAll('.tab-btn[data-filter]').forEach(function (tab) {
+                tab.classList.remove('active');
+            });
+
+            // Bosilgan tabga active class berish
+            button.classList.add('active');
+
+            // Filtrni ishga tushirish
+            const selectedFilter = button.dataset.filter || 'ALL';
+            filterProductRows(selectedFilter);
         });
     });
 }
 
+/**
+ * Products jadvalidagi har bir status select elementini ishga tushiradi
+ * Status o'zgarganda serverga so'rov yuboradi va UI ni yangilaydi
+ */
 function initProductStatusColors() {
-    document.querySelectorAll('.status-select[data-id]:not([data-type="user"])').forEach((select) => {
-        if (select.dataset.productStatusBound === '1') return;
+    // data-type="user" bo'lganlarni o'tkazib yuborish (ular member.js da boshqariladi)
+    const productSelects = document.querySelectorAll('.status-select[data-id]:not([data-type="user"])');
 
+    productSelects.forEach(function (select) {
+        // Bir marta bog'langan bo'lsa, qayta bog'lama
+        if (select.dataset.productStatusBound === '1') return;
         select.dataset.productStatusBound = '1';
-        select.dataset.prevStatus = select.closest('tr')?.dataset.status || select.value;
+
+        // Boshlang'ich rangni va oldingi statusni saqlash
+        const row = select.closest('tr');
+        select.dataset.prevStatus = row ? row.dataset.status : select.value;
         applyStatusSelectColor(select);
 
-        select.addEventListener('change', async () => {
+        // Status o'zgarganda
+        select.addEventListener('change', async function () {
             const productId = select.dataset.id;
             const newStatus = select.value;
-            const row = select.closest('tr');
-            const previousStatus = select.dataset.prevStatus;
+            const prevStatus = select.dataset.prevStatus;
 
             try {
-                await axios.post(`/admin/product/${productId}`, { productStatus: newStatus });
+                // Serverga yangi statusni yuborish
+                await axios.post('/admin/product/' + productId, {
+                    productStatus: newStatus,
+                });
+
+                // Muvaffaqiyatli bo'lsa — UI ni yangilash
                 select.dataset.prevStatus = newStatus;
                 applyStatusSelectColor(select);
                 showValidationAlert('Product status updated successfully!');
 
                 if (row) {
                     row.dataset.status = newStatus;
+
+                    // Tab sonlarini yangilash
                     updateTabCounts();
-                    const activeTab = document.querySelector('.tab-btn.active');
+
+                    // Aktiv filterni qayta ishlatish
+                    const activeTab = document.querySelector('.tab-btn.active[data-filter]');
                     if (activeTab) {
                         filterProductRows(activeTab.dataset.filter || 'ALL');
                     }
                 }
+
             } catch (error) {
+                // Xato bo'lsa — oldingi statusga qaytarish
                 const message = error.response?.data?.message || 'Product status update failed. Please try again!';
                 showValidationAlert(message);
-                select.value = previousStatus;
+                select.value = prevStatus;
                 applyStatusSelectColor(select);
             }
         });

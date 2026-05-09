@@ -74,7 +74,7 @@ class PetServiceService {
         const result = await this.petServiceModel
             .find({
                 memberId: id,
-                serviceStatus: { $ne: PetServiceStatus.DELETED },
+                serviceStatus: { $ne: PetServiceStatus.CANCELLED },
             })
             .lean()
             .exec();
@@ -129,9 +129,7 @@ class PetServiceService {
 
     /** Get all services — optionally filtered */
     public async getAllPetServices(inquiry: PetServiceInquiry): Promise<PetService[]> {
-        const match: Record<string, any> = {
-            serviceStatus: { $ne: PetServiceStatus.DELETED },
-        };
+        const match: Record<string, any> = {};
 
         if (inquiry.serviceDate) {
             const dayStart = new Date(inquiry.serviceDate);

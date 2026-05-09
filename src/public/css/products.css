@@ -1,0 +1,58 @@
+/* ============================================================
+   PRODUCTS — Mahsulotlar sahifasiga xos stillar
+   ============================================================ */
+
+/* ── FORM CARD ── */
+.form-card {
+  background: white;
+  border-radius: 14px;
+  border: 1px solid #e8f0f0;
+  padding: 28px;
+  margin-bottom: 32px;
+}
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+
+/* ── UPLOAD BOX ── */
+.upload-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-top: 8px;
+}
+.upload-box {
+  aspect-ratio: 1;
+  border-radius: 10px;
+  border: 2px dashed #c8dede;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  background: #f7fbfb;
+  transition: all .15s;
+  position: relative;
+  overflow: hidden;
+}
+.upload-box:hover            { border-color: var(--teal); background: var(--teal-pale); }
+.upload-box svg              { width: 22px; height: 22px; stroke: #9ababa; }
+.upload-box:hover svg        { stroke: var(--teal); }
+.upload-box span             { font-size: 10px; color: #9ababa; }
+.upload-box:hover span       { color: var(--teal); }
+
+.upload-box img.slot-preview {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+  pointer-events: none;
+}
+.upload-box.has-image svg,
+.upload-box.has-image span { display: none; }
+.upload-box.has-image {
+  border-style: solid;
+  border-color: var(--teal);
+}

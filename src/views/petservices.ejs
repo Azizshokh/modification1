@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PetFood Admin - Pet Services</title>
     <link rel="icon" type="image/png" href="/img/favicon.png" />
-    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/base.css" />
+    <link rel="stylesheet" href="/css/petservices.css" />
 </head>
 
 <body>
@@ -29,6 +30,10 @@
                                 Active (<%= petServices.filter((service)=> service.serviceStatus === 'ACTIVE').length
                                     %>)
                             </button>
+                            <button class="tab-btn" type="button" data-ps-filter="ACCEPTED">
+                                Accepted (<%= petServices.filter((service)=> service.serviceStatus ===
+                                    'ACCEPTED').length %>)
+                            </button>
                             <button class="tab-btn" type="button" data-ps-filter="COMPLETED">
                                 Completed (<%= petServices.filter((service)=> service.serviceStatus ===
                                     'COMPLETED').length %>)
@@ -36,10 +41,6 @@
                             <button class="tab-btn" type="button" data-ps-filter="CANCELLED">
                                 Cancelled (<%= petServices.filter((service)=> service.serviceStatus ===
                                     'CANCELLED').length %>)
-                            </button>
-                            <button class="tab-btn" type="button" data-ps-filter="DELETED">
-                                Deleted (<%= petServices.filter((service)=> service.serviceStatus === 'DELETED').length
-                                    %>)
                             </button>
                         </div>
                     </div>
@@ -99,12 +100,12 @@
                                                         data-petservice-id="<%= service._id %>">
                                                         <option value="ACTIVE" <%=service.serviceStatus==='ACTIVE'
                                                             ? 'selected' : '' %>>ACTIVE</option>
+                                                        <option value="ACCEPTED" <%=service.serviceStatus==='ACCEPTED'
+                                                            ? 'selected' : '' %>>ACCEPTED</option>
                                                         <option value="COMPLETED" <%=service.serviceStatus==='COMPLETED'
                                                             ? 'selected' : '' %>>COMPLETED</option>
                                                         <option value="CANCELLED" <%=service.serviceStatus==='CANCELLED'
                                                             ? 'selected' : '' %>>CANCELLED</option>
-                                                        <option value="DELETED" <%=service.serviceStatus==='DELETED'
-                                                            ? 'selected' : '' %>>DELETED</option>
                                                     </select>
                                                 </td>
                                             </tr>
@@ -118,6 +119,7 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="/js/utils.js"></script>
+    <script src="/js/member.js"></script>
     <script src="/js/petservice.js"></script>
     <script src="/js/init.js"></script>
 </body>

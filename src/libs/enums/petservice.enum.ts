@@ -9,9 +9,9 @@ export enum PetType {
 
 export enum PetServiceStatus {
     ACTIVE = "ACTIVE",
-    CANCELLED = "CANCELLED",
+    ACCEPTED = "ACCEPTED",
     COMPLETED = "COMPLETED",
-    DELETED = "DELETED",
+    CANCELLED = "CANCELLED",
 }
 
 export enum PetServiceType {

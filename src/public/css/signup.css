@@ -1,0 +1,84 @@
+/* ============================================================
+   SIGNUP — Ro'yxatdan o'tish sahifasiga xos stillar
+   (login.css ham kerak — umumiy auth layout uchun)
+   ============================================================ */
+
+/* ── MEDIA YUKLASH BLOKI ── */
+.signup-media-group { margin-bottom: 24px; }
+.signup-media-layout {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.signup-media-controls {
+  flex: 1;
+  min-width: 0;
+}
+.signup-file-row {
+  display: flex;
+  gap: 0;
+  border: 1.5px solid #e0ecec;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.signup-file-name {
+  border: none;
+  border-radius: 0;
+  flex: 1;
+  background: #f7fbfb;
+}
+.signup-file-button {
+  background: var(--teal);
+  color: white;
+  padding: 10px 16px;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+.signup-file-hint {
+  font-size: 11px;
+  color: #9ababa;
+  margin-top: 6px;
+}
+
+/* ── RASM PREVIEW ── */
+.signup-image-preview {
+  width: 124px;
+  height: 124px;
+  border-radius: 10px;
+  border: 1px solid #d9e9e9;
+  background: #f7fbfb;
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+}
+.signup-image-preview img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: none;
+}
+.signup-image-preview.has-image img { display: block; }
+
+.signup-image-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 11px;
+  color: #8da7a7;
+  padding: 8px;
+  border: 1px dashed #c7dddd;
+  border-radius: 10px;
+  margin: 6px;
+}
+.signup-image-preview.has-image .signup-image-placeholder { display: none; }
+
+/* ── MOBIL MOSLASHISH ── */
+@media (max-width: 560px) {
+  .signup-media-layout { flex-direction: column; }
+  .signup-image-preview { width: 100%; max-width: 180px; }
+}

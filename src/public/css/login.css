@@ -1,0 +1,163 @@
+/* ============================================================
+   LOGIN — Kirish sahifasiga xos stillar
+   (signup.ejs ham bu faylni ishlatadi — umumiy auth layout)
+   ============================================================ */
+
+/* ── AUTH SAHIFA ASOSI ── */
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  background: var(--teal-dark);
+}
+
+/* ── CHAP PANEL ── */
+.auth-left {
+  width: 55%;
+  background: var(--teal-dark);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  position: relative;
+  overflow: hidden;
+}
+.auth-left::before {
+  content: '';
+  position: absolute;
+  width: 520px; height: 520px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.03);
+  top: -140px; left: -140px;
+}
+.auth-left::after {
+  content: '';
+  position: absolute;
+  width: 380px; height: 380px;
+  border-radius: 50%;
+  background: rgba(159,200,126,.06);
+  bottom: -90px; right: -90px;
+}
+.auth-art {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  width: min(100%, 560px);
+}
+.auth-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+  padding: 16px 22px;
+  margin-bottom: 34px;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 26px;
+  background: rgba(255,255,255,.04);
+  box-shadow: 0 18px 40px rgba(0,0,0,.14);
+  backdrop-filter: blur(10px);
+}
+.auth-brand-logo {
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  background: rgba(255,255,255,.92);
+  padding: 10px;
+  object-fit: contain;
+  box-shadow: 0 10px 24px rgba(0,0,0,.2);
+}
+.auth-brand-copy { text-align: left; }
+.auth-brand-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: .01em;
+  color: white;
+}
+.auth-brand-name span { color: var(--green); }
+.auth-brand-note {
+  margin-top: 7px;
+  font-size: 13px;
+  letter-spacing: .02em;
+  color: rgba(255,255,255,.62);
+}
+
+/* ── ANIMATSION DOIRALAR ── */
+.auth-art-circles {
+  position: relative;
+  width: 340px; height: 340px;
+  margin: 0 auto 36px;
+}
+.auth-circle {
+  position: absolute;
+  border-radius: 50%;
+  animation: pulse 4s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1);    opacity: 1; }
+  50%       { transform: scale(1.07); opacity: .82; }
+}
+.ac1 { width: 340px; height: 340px; top: 0;   left: 0;   background: rgba(159,200,126,.09); animation-delay: 0s; }
+.ac2 { width: 250px; height: 250px; top: 45px; left: 45px; background: rgba(6,91,94,.38);    animation-delay: .5s; }
+.ac3 { width: 160px; height: 160px; top: 90px; left: 90px; background: rgba(6,91,94,.58);    animation-delay: 1s; }
+
+.auth-paw {
+  position: absolute;
+  width: 110px; height: 110px;
+  top: 115px; left: 115px;
+  display: flex; align-items: center; justify-content: center;
+}
+.auth-paw svg {
+  width: 82px; height: 82px;
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,.16));
+}
+.auth-left-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 40px;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 12px;
+  line-height: 1.08;
+}
+.auth-left-sub {
+  max-width: 470px;
+  margin: 0 auto;
+  font-size: 17px;
+  color: rgba(255,255,255,.64);
+  line-height: 1.7;
+}
+
+/* ── O'NG PANEL (FORM) ── */
+.auth-right {
+  width: 45%;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+}
+.auth-form { width: 100%; max-width: 360px; }
+.auth-form-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--teal-pale);
+  color: var(--teal);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 999px;
+  margin-bottom: 18px;
+  letter-spacing: .02em;
+}
+.auth-form-tag-icon { font-size: 20px; line-height: 1; }
+.auth-form-tag-text { line-height: 1; }
+.auth-form-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--teal-dark);
+  margin-bottom: 6px;
+}
+.auth-form-sub { font-size: 13px; color: #6e8e8e; margin-bottom: 28px; }
+.auth-form-sub a { color: var(--teal); text-decoration: none; font-weight: 500; }
