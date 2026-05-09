@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PetFood Admin - Pet Services</title>
+    <link rel="icon" type="image/png" href="/img/favicon.png" />
+    <link rel="stylesheet" href="/css/style.css" />
+</head>
+
+<body>
+    <div class="shell">
+
+        <%- include('partials/sidebar', { page: 'petservices' }) %>
+
+            <main class="main">
+                <div class="topbar">
+                    <div class="topbar-title">Pet Services</div>
+                </div>
+
+                <div class="page-content">
+                    <div class="section-header">
+                        <span class="section-title">Service Situation Overview</span>
+                        <div class="tabs">
+                            <button class="tab-btn active" type="button" data-ps-filter="ALL">All (<%=
+                                    petServices.length %>)</button>
+                            <button class="tab-btn" type="button" data-ps-filter="ACTIVE">
+                                Active (<%= petServices.filter((service)=> service.serviceStatus === 'ACTIVE').length
+                                    %>)
+                            </button>
+                            <button class="tab-btn" type="button" data-ps-filter="COMPLETED">
+                                Completed (<%= petServices.filter((service)=> service.serviceStatus ===
+                                    'COMPLETED').length %>)
+                            </button>
+                            <button class="tab-btn" type="button" data-ps-filter="CANCELLED">
+                                Cancelled (<%= petServices.filter((service)=> service.serviceStatus ===
+                                    'CANCELLED').length %>)
+                            </button>
+                            <button class="tab-btn" type="button" data-ps-filter="DELETED">
+                                Deleted (<%= petServices.filter((service)=> service.serviceStatus === 'DELETED').length
+                                    %>)
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-card">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Pet Name</th>
+                                    <th>Pet Type</th>
+                                    <th>Service Type</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Location</th>
+                                    <th>Member Name</th>
+                                    <th>Phone</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="petservices-table-body">
+                                <% petServices.forEach((service, i)=> { %>
+                                    <% const member=typeof service.memberId==='object' ? service.memberId : null; %>
+                                        <% const locationDisplay=service.serviceLocation==='CLINIC' ? 'Clinic' :
+                                            service.serviceAddress; %>
+                                            <tr data-ps-status="<%= service.serviceStatus %>">
+                                                <td>
+                                                    <%= i + 1 %>
+                                                </td>
+                                                <td>
+                                                    <%= service.petName %>
+                                                </td>
+                                                <td>
+                                                    <%= service.petType %>
+                                                </td>
+                                                <td>
+                                                    <%= service.serviceType %>
+                                                </td>
+                                                <td>
+                                                    <%= new Date(service.serviceDate).toLocaleDateString('en-US', {
+                                                        month: 'short' , day: 'numeric' , year: 'numeric' }) %>
+                                                </td>
+                                                <td>
+                                                    <%= service.serviceTime %>
+                                                </td>
+                                                <td>
+                                                    <%= locationDisplay %>
+                                                </td>
+                                                <td>
+                                                    <%= member ? member.memberNick : 'Unknown' %>
+                                                </td>
+                                                <td>
+                                                    <%= member ? member.memberPhone : '-' %>
+                                                </td>
+                                                <td>
+                                                    <select class="status-select"
+                                                        data-petservice-id="<%= service._id %>">
+                                                        <option value="ACTIVE" <%=service.serviceStatus==='ACTIVE'
+                                                            ? 'selected' : '' %>>ACTIVE</option>
+                                                        <option value="COMPLETED" <%=service.serviceStatus==='COMPLETED'
+                                                            ? 'selected' : '' %>>COMPLETED</option>
+                                                        <option value="CANCELLED" <%=service.serviceStatus==='CANCELLED'
+                                                            ? 'selected' : '' %>>CANCELLED</option>
+                                                        <option value="DELETED" <%=service.serviceStatus==='DELETED'
+                                                            ? 'selected' : '' %>>DELETED</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/js/utils.js"></script>
+    <script src="/js/petservice.js"></script>
+    <script src="/js/init.js"></script>
+</body>
+
+</html>

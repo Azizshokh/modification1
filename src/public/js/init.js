@@ -8,6 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
     initProductStatusColors();
     filterProductRows('ALL');
     initProductImageUpload();
+    initPetServiceTabs();
+    initPetServiceStatusColors();
+    filterPetServiceRows('ALL');
 
     const collectionSelect = document.getElementById('product-collection-select');
     if (collectionSelect) {

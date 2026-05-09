@@ -2,6 +2,7 @@ import express from "express";
 const routerAdmin = express.Router();
 import marketController from "./controllers/market.controller";
 import productController from "./controllers/product.controller";
+import petServiceController from "./controllers/petservice.controller";
 import makeUploader from "./libs/utils/uploader";
 
 /*** Admin Routes ***/
@@ -35,6 +36,25 @@ routerAdmin.post(
     "/product/:id",
     marketController.verifyAdmin,
     productController.updateChosenProduct
+);
+
+/*** Pet Service Routes ***/
+routerAdmin.get(
+    "/pet-service/all",
+    marketController.verifyAdmin,
+    petServiceController.getAllPetServices
+);
+
+routerAdmin.post(
+    "/pet-service/create",
+    marketController.verifyAdmin,
+    petServiceController.createPetService
+);
+
+routerAdmin.post(
+    "/pet-service/edit",
+    marketController.verifyAdmin,
+    petServiceController.updateChosenPetService
 );
 
 /*** User Routes ***/
