@@ -17,9 +17,13 @@ export enum PetServiceStatus {
 export enum PetServiceType {
     HOME_TO_HOME = "HOME_TO_HOME",
     CLINIC_TO_CLINIC = "CLINIC_TO_CLINIC",
+    ONLINE_CONSULTATION = "ONLINE_CONSULTATION",
+    GROOMING = "GROOMING",
+    VACCINATION = "VACCINATION",
 }
 
 export enum PetServiceLocation {
     HOME = "HOME",
     CLINIC = "CLINIC",
+    ONLINE = "ONLINE",
 }
