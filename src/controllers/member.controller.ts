@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { T } from "../libs/types/common";
 import { LoginInput, Member, MemberInput } from "../libs/types/member";
 import MemberService from "../models/Member.service";
-import Errors, { HttpCode } from "../libs/Error";
+import Errors, { HttpCode, Message } from "../libs/Error";
 import AuthService from "../models/Auth.service";
 import { AUTH_TIMER } from "../libs/config";
 
@@ -52,5 +52,21 @@ memberController.login = async (req: Request, res: Response) => {
         else res.status(Errors.standard.code).json(Errors.standard);
     }
 };
+
+memberController.verifyAuth = async (req: Request, res: Response) => {
+    try {
+        let member = null;
+        const token = req.cookies["accessToken"];
+        if (token) member = await authService.checkAuth(token);
+
+        if (!member) throw new Errors(HttpCode.UNAUTHORIZED, Message.CREATE_FAILED);
+
+        res.status(HttpCode.OK).json({ member: member });
+    } catch (error) {
+        console.error("Error in verifyAuth:", error);
+        if (error instanceof Errors) res.status(error.code).json(error);
+        else res.status(Errors.standard.code).json(Errors.standard);
+    }
+}
 
 export default memberController;

@@ -3,8 +3,14 @@ const router = express.Router();
 import memberController from "./controllers/member.controller";
 import petServiceController from "./controllers/petservice.controller";
 
-router.post("/login", memberController.login);
-router.post("/signup", memberController.signup);
+/*** Member Routes ***/
+router.post("/member/login", memberController.login);
+router.post("/member/signup", memberController.signup);
+router.get("/member/detail", memberController.verifyAuth);
+
+/*** Product Routes ***/
+
+/*** Order Routes ***/
 
 /*** Pet Service Routes ***/
 router.get("/pet-service/slots", petServiceController.getAvailableSlots);
