@@ -5,6 +5,7 @@ import petServiceController from "./controllers/petservice.controller";
 import uploader from "./libs/utils/uploader";
 
 /*** Member Routes ***/
+router.get("/member/getAdmin", memberController.getAdmin);
 router.post("/member/login", memberController.login);
 router.post("/member/signup", memberController.signup);
 router.post("/member/logout", memberController.verifyAuth, memberController.logout);
