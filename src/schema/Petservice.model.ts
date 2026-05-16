@@ -51,7 +51,6 @@ const petServiceSchema = new Schema(
     { timestamps: true }
 );
 
-// Compound index: only one booking per (date + time) slot
 petServiceSchema.index(
     { serviceDate: 1, serviceTime: 1 },
     { unique: true, sparse: true }
