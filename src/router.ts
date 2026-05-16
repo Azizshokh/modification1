@@ -4,6 +4,7 @@ import memberController from "./controllers/member.controller";
 import petServiceController from "./controllers/petservice.controller";
 import productController from "./controllers/product.controller";
 import uploader from "./libs/utils/uploader";
+import orderController from "./controllers/order.controller";
 
 /*** Member Routes ***/
 router.get("/member/getAdmin", memberController.getAdmin);
@@ -24,6 +25,7 @@ router.get("/product/all", productController.getProducts);
 router.get("/product/:id", memberController.retrieveAuth, productController.getProductDetail);
 
 /*** Order Routes ***/
+router.post("/order/create", memberController.verifyAuth, orderController.createOrder);
 
 /*** Pet Service Routes ***/
 router.get("/pet-service/slots", petServiceController.getAvailableSlots);
