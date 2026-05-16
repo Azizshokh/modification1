@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { T } from "../libs/types/common";
-import { ExtendedRequest, LoginInput, Member, MemberInput } from "../libs/types/member";
+import { ExtendedRequest, LoginInput, Member, MemberInput, MemberUpdateInput } from "../libs/types/member";
 import MemberService from "../models/Member.service";
 import Errors, { HttpCode, Message } from "../libs/Error";
 import AuthService from "../models/Auth.service";
@@ -74,6 +74,20 @@ memberController.getMemberDetail = async (req: ExtendedRequest, res: Response) =
         res.status(HttpCode.OK).json(result);
     } catch (error) {
         console.error("Error in getMemberDetail:", error);
+        if (error instanceof Errors) res.status(error.code).json(error);
+        else res.status(Errors.standard.code).json(Errors.standard);
+    }
+};
+
+memberController.updateMemberDetail = async (req: ExtendedRequest, res: Response) => {
+    try {
+        const input: MemberUpdateInput = req.body;
+        if (req.file) input.memberImage = req.file.path.replace(/\\/g, "/");
+        const result = await memberService.updateMemberDetail(req.member, input);
+
+        res.status(HttpCode.OK).json(result);
+    } catch (error) {
+        console.error("Error in updateMemberDetail:", error);
         if (error instanceof Errors) res.status(error.code).json(error);
         else res.status(Errors.standard.code).json(Errors.standard);
     }

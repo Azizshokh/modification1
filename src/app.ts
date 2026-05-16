@@ -29,6 +29,7 @@ const resolveAppPath = (...segments: string[]): string => {
 /*** 1-Entrance ***/
 const app = express();
 app.use(express.static(resolveAppPath("public")));
+app.use("/uploads", express.static(path.resolve(process.cwd(), "uploads")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
