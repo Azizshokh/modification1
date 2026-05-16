@@ -67,6 +67,18 @@ memberController.logout = async (req: ExtendedRequest, res: Response) => {
     }
 };
 
+memberController.getMemberDetail = async (req: ExtendedRequest, res: Response) => {
+    try {
+        const result = await memberService.getMemberDetail(req.member);
+
+        res.status(HttpCode.OK).json(result);
+    } catch (error) {
+        console.error("Error in getMemberDetail:", error);
+        if (error instanceof Errors) res.status(error.code).json(error);
+        else res.status(Errors.standard.code).json(Errors.standard);
+    }
+};
+
 memberController.verifyAuth = async (req: ExtendedRequest, res: Response, next: NextFunction) => {
     try {
         const token = req.cookies["accessToken"];
