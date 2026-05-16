@@ -1,3 +1,4 @@
+import cors from "cors";
 import express from "express";
 import path from "path";
 import fs from "fs";
@@ -32,6 +33,7 @@ app.use(express.static(resolveAppPath("public")));
 app.use("/uploads", express.static(path.resolve(process.cwd(), "uploads")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cors({ origin: true, credentials: true }));
 app.use(cookieParser());
 app.use(morgan(MORGAN_FORMAT));
 
