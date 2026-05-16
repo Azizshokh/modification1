@@ -3,7 +3,7 @@ import { T } from "../libs/types/common";
 import { Response } from "express";
 import Errors, { HttpCode } from "../libs/Error";
 import OrderService from "../models/Order.service";
-import { OrderInquiry } from "../libs/types/order";
+import { OrderInquiry, OrderUpdateInput } from "../libs/types/order";
 import { OrderStatus } from "../libs/enums/order.enum";
 
 const orderService = new OrderService();
@@ -45,5 +45,20 @@ orderController.getMyOrders = async (req: ExtendedRequest, res: Response) => {
         }
     }
 };
+
+orderController.updateOrder = async (req: ExtendedRequest, res: Response) => {
+    try {
+        const input: OrderUpdateInput = req.body;
+        const result = await orderService.updateOrder(req.member, input);
+        res.status(HttpCode.OK).json(result);
+    } catch (error) {
+        console.error("Error in updateOrder:", error);
+        if (error instanceof Errors) {
+            res.status(error.code).json(error);
+        } else {
+            res.status(Errors.standard.code).json(Errors.standard);
+        }
+    }
+}
 
 export default orderController;
