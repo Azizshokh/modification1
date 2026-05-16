@@ -26,6 +26,7 @@ router.get("/product/:id", memberController.retrieveAuth, productController.getP
 
 /*** Order Routes ***/
 router.post("/order/create", memberController.verifyAuth, orderController.createOrder);
+router.get("/order/all", memberController.verifyAuth, orderController.getMyOrders);
 
 /*** Pet Service Routes ***/
 router.get("/pet-service/slots", petServiceController.getAvailableSlots);
