@@ -117,32 +117,43 @@ memberController.getTopUsers = async (req: Request, res: Response) => {
     }
 }
 
-memberController.verifyAuth = async (req: ExtendedRequest, res: Response, next: NextFunction) => {
+memberController.verifyAuth = async (
+    req: ExtendedRequest,
+    res: Response,
+    next: NextFunction
+) => {
     try {
         const token = req.cookies["accessToken"];
         if (token) req.member = await authService.checkAuth(token);
 
-        if (!req.member) throw new Errors(HttpCode.UNAUTHORIZED, Message.NOT_AUTHENTICATED);
+        if (!req.member)
+            throw new Errors(HttpCode.UNAUTHORIZED, Message.NOT_AUTHENTICATED);
+        console.log("req.member:", req.member);
 
         next();
-    } catch (error) {
-        console.error("Error in verifyAuth:", error);
-        if (error instanceof Errors) res.status(error.code).json(error);
+    } catch (err) {
+        console.log("Error, verifyAuth:", err);
+        if (err instanceof Errors) res.status(err.code).json(err);
         else res.status(Errors.standard.code).json(Errors.standard);
+
     }
 }
 
-memberController.retriveAuth = async (req: ExtendedRequest, res: Response, next: NextFunction) => {
+memberController.retrieveAuth = async (
+    req: ExtendedRequest,
+    res: Response,
+    next: NextFunction
+) => {
     try {
         const token = req.cookies["accessToken"];
         if (token) req.member = await authService.checkAuth(token);
+        console.log("req.member:", req.member);
 
         next();
-    } catch (error) {
-        console.error("Error in retriveAuth:", error);
-        if (error instanceof Errors) res.status(error.code).json(error);
-        else res.status(Errors.standard.code).json(Errors.standard);
+    } catch (err) {
+        console.log("Error, retrieveAuth:", err);
         next();
+
     }
 }
 
