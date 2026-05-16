@@ -16,6 +16,8 @@ router.post(
     memberController.updateMemberDetail
 );
 
+router.get("/member/top-users", memberController.getTopUsers);
+
 /*** Product Routes ***/
 
 /*** Order Routes ***/
