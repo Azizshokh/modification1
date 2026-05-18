@@ -2,35 +2,32 @@
 //  product.js — Mahsulot bilan bog'liq funksiyalar
 // ============================================================
 
+// Server-side status counts (products.ejs da hidden div orqali uzatiladi)
+var productStatusCounts = (function () {
+    var el = document.getElementById('product-counts-data');
+    if (!el) return { ALL: 0, PROCESS: 0, PAUSE: 0, DELETED: 0 };
+    return {
+        ALL: parseInt(el.dataset.all, 10) || 0,
+        PROCESS: parseInt(el.dataset.process, 10) || 0,
+        PAUSE: parseInt(el.dataset.pause, 10) || 0,
+        DELETED: parseInt(el.dataset.deleted, 10) || 0,
+    };
+})();
+
 /**
  * Products jadvalidagi tab tugmalarining sonlarini yangilaydi
  * (All, Active/Process, Paused, Deleted)
  */
 function updateTabCounts() {
-    const allRows = document.querySelectorAll('#products-table-body tr[data-status]');
+    if (typeof productStatusCounts === 'undefined') return;
 
-    let processCount = 0;
-    let pauseCount = 0;
-    let deletedCount = 0;
-
-    allRows.forEach(function (row) {
-        const status = row.dataset.status;
-        if (status === 'PROCESS') processCount++;
-        if (status === 'PAUSE') pauseCount++;
-        if (status === 'DELETED') deletedCount++;
-    });
-
-    const total = allRows.length;
-
-    // Tab tugmalarini yangilash
-    const tabButtons = document.querySelectorAll('.tab-btn[data-filter]');
-    tabButtons.forEach(function (button) {
-        const filter = button.dataset.filter;
-
-        if (filter === 'ALL') button.textContent = 'All (' + total + ')';
-        if (filter === 'PROCESS') button.textContent = 'Active (' + processCount + ')';
-        if (filter === 'PAUSE') button.textContent = 'Paused (' + pauseCount + ')';
-        if (filter === 'DELETED') button.textContent = 'Deleted (' + deletedCount + ')';
+    const tabLinks = document.querySelectorAll('.tab-btn[data-filter]');
+    tabLinks.forEach(function (el) {
+        const filter = el.dataset.filter;
+        if (filter === 'ALL') el.textContent = 'All (' + productStatusCounts.ALL + ')';
+        if (filter === 'PROCESS') el.textContent = 'Active (' + productStatusCounts.PROCESS + ')';
+        if (filter === 'PAUSE') el.textContent = 'Paused (' + productStatusCounts.PAUSE + ')';
+        if (filter === 'DELETED') el.textContent = 'Deleted (' + productStatusCounts.DELETED + ')';
     });
 }
 
@@ -65,30 +62,11 @@ function filterProductRows(status) {
 
 /**
  * Products tab tugmalarini ishga tushiradi
- * Tugma bosilganda aktiv class o'tadi va filtr ishga tushadi
+ * Tablar endi server-side filterlash uchun URL navigatsiya qiladi
  */
 function initProductTabs() {
-    const tabButtons = document.querySelectorAll('.tab-btn[data-filter]');
-
-    tabButtons.forEach(function (button) {
-        button.addEventListener('click', function () {
-            // Faqat shu button'ning container'idagi tablarni boshqarish
-            const tabsContainer = button.closest('.tabs');
-            if (!tabsContainer) return;
-
-            // Barcha tablardan active classini olib tashlash
-            tabsContainer.querySelectorAll('.tab-btn[data-filter]').forEach(function (tab) {
-                tab.classList.remove('active');
-            });
-
-            // Bosilgan tabga active class berish
-            button.classList.add('active');
-
-            // Filtrni ishga tushirish
-            const selectedFilter = button.dataset.filter || 'ALL';
-            filterProductRows(selectedFilter);
-        });
-    });
+    // Tablar endi <a href> bilan ishlaydi — qo'shimcha JS shart emas
+    // filterProductRows faqat muvofiq tab aktiv bo'lganda chaqiriladi (init.js)
 }
 
 /**
@@ -128,6 +106,12 @@ function initProductStatusColors() {
 
                 if (row) {
                     row.dataset.status = newStatus;
+
+                    // Global sonlarni yangilash (barcha productlar bo'yicha)
+                    if (typeof productStatusCounts !== 'undefined') {
+                        if (productStatusCounts[prevStatus] !== undefined) productStatusCounts[prevStatus]--;
+                        if (productStatusCounts[newStatus] !== undefined) productStatusCounts[newStatus]++;
+                    }
 
                     // Tab sonlarini yangilash
                     updateTabCounts();

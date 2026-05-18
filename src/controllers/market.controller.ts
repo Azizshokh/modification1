@@ -13,7 +13,7 @@ const marketController: T = {};
 marketController.goHome = async (req: Request, res: Response) => {
     try {
         console.log("goHome");
-        const [products, users] = await Promise.all([
+        const [{ products, total: totalProducts }, users] = await Promise.all([
             productService.getAllProducts(),
             memberService.getUsers(),
         ]);
@@ -26,7 +26,7 @@ marketController.goHome = async (req: Request, res: Response) => {
 
         res.render("index", {
             stats: {
-                totalProducts: products.length,
+                totalProducts,
                 totalUsers: users.length,
                 activeListings: products.filter((product) => product.productStatus === ProductStatus.PROCESS).length,
                 pausedItems: products.filter((product) => product.productStatus === ProductStatus.PAUSE).length,

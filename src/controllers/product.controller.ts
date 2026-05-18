@@ -58,9 +58,13 @@ productController.getProductDetail = async (req: ExtendedRequest, res: Response)
 productController.getAllProducts = async (req: AdminRequest, res: Response) => {
     try {
         console.log("getAllProducts");
-        const data = await productService.getAllProducts();
+        const page = Math.max(1, Number(req.query.page) || 1);
+        const limit = 10;
+        const currentStatus = String(req.query.status || 'ALL');
+        const { products, total, totalProcess, totalPause, totalDeleted } = await productService.getAllProducts(page, limit, currentStatus);
+        const totalPages = Math.ceil(total / limit);
 
-        res.render("products", { products: data });
+        res.render("products", { products, currentPage: page, totalPages, limit, total, totalProcess, totalPause, totalDeleted, currentStatus });
     } catch (error) {
         console.error("Error in getAllProducts:", error);
         if (error instanceof Errors) {

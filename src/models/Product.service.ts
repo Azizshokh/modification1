@@ -72,9 +72,18 @@ class ProductService {
     }
 
     /*** SSR ***/
-    public async getAllProducts(): Promise<Product[]> {
+    public async getAllProducts(page: number = 1, limit: number = 10, status: string = 'ALL'): Promise<{ products: Product[]; total: number; totalProcess: number; totalPause: number; totalDeleted: number }> {
         try {
-            return await this.productModel.find().exec();
+            const filter = (status && status !== 'ALL') ? { productStatus: status } : {};
+            const skip = (page - 1) * limit;
+            const [products, total, totalProcess, totalPause, totalDeleted] = await Promise.all([
+                this.productModel.find(filter).skip(skip).limit(limit).exec(),
+                this.productModel.countDocuments(filter).exec(),
+                this.productModel.countDocuments({ productStatus: 'PROCESS' }).exec(),
+                this.productModel.countDocuments({ productStatus: 'PAUSE' }).exec(),
+                this.productModel.countDocuments({ productStatus: 'DELETED' }).exec(),
+            ]);
+            return { products, total, totalProcess, totalPause, totalDeleted };
         } catch (error) {
             console.error("Error in getAllProducts:", error);
             throw new Errors(HttpCode.BAD_REQUEST, Message.NO_DATA_FOUND);
