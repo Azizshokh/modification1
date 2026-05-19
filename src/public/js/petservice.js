@@ -10,17 +10,15 @@ function updatePetServiceTabCounts() {
     const allRows = document.querySelectorAll('#petservices-table-body tr[data-ps-status]');
 
     // Har bir status sonini hisoblash
-    let activeCount = 0;
+    let pauseCount = 0;
     let acceptedCount = 0;
     let completedCount = 0;
-    let cancelledCount = 0;
 
     allRows.forEach(function (row) {
         const status = row.dataset.psStatus;
-        if (status === 'ACTIVE') activeCount++;
+        if (status === 'PAUSE') pauseCount++;
         if (status === 'ACCEPTED') acceptedCount++;
         if (status === 'COMPLETED') completedCount++;
-        if (status === 'CANCELLED') cancelledCount++;
     });
 
     const total = allRows.length;
@@ -31,10 +29,9 @@ function updatePetServiceTabCounts() {
         const filter = button.dataset.psFilter;
 
         if (filter === 'ALL') button.textContent = 'All (' + total + ')';
-        if (filter === 'ACTIVE') button.textContent = 'Active (' + activeCount + ')';
+        if (filter === 'PAUSE') button.textContent = 'Pause (' + pauseCount + ')';
         if (filter === 'ACCEPTED') button.textContent = 'Accepted (' + acceptedCount + ')';
         if (filter === 'COMPLETED') button.textContent = 'Completed (' + completedCount + ')';
-        if (filter === 'CANCELLED') button.textContent = 'Cancelled (' + cancelledCount + ')';
     });
 }
 
@@ -152,4 +149,83 @@ function initPetServiceStatusColors() {
             }
         });
     });
+}
+// ============================================================
+// Pet Service jadval polling - browser reload qilmasdan yangilash
+// ============================================================
+
+function escapeHtml(value) {
+    if (value === null || value === undefined) return '';
+    return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function formatPsDate(value) {
+    try {
+        var d = new Date(value);
+        return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    } catch (e) { return ''; }
+}
+
+function buildPetServiceRow(service, index) {
+    var member = (service.memberId && typeof service.memberId === 'object') ? service.memberId : null;
+    var locationDisplay = service.serviceLocation === 'CLINIC' ? 'Clinic' : (service.serviceAddress || '');
+    var memberNick = member ? member.memberNick : 'Unknown';
+    var memberPhone = member ? member.memberPhone : '-';
+    var statuses = ['PAUSE', 'ACCEPTED', 'COMPLETED'];
+    var options = statuses.map(function (s) {
+        var sel = service.serviceStatus === s ? ' selected' : '';
+        return '<option value="' + s + '"' + sel + '>' + s + '</option>';
+    }).join('');
+
+    return '<tr data-ps-status="' + escapeHtml(service.serviceStatus) + '" data-ps-id="' + escapeHtml(service._id) + '">'
+        + '<td>' + (index + 1) + '</td>'
+        + '<td>' + escapeHtml(service.petName) + '</td>'
+        + '<td>' + escapeHtml(service.petType) + '</td>'
+        + '<td>' + escapeHtml(service.serviceType) + '</td>'
+        + '<td>' + escapeHtml(formatPsDate(service.serviceDate)) + '</td>'
+        + '<td>' + escapeHtml(service.serviceTime) + '</td>'
+        + '<td>' + escapeHtml(locationDisplay) + '</td>'
+        + '<td>' + escapeHtml(service.specialNote || '-') + '</td>'
+        + '<td>' + escapeHtml(memberNick) + '</td>'
+        + '<td>' + escapeHtml(memberPhone) + '</td>'
+        + '<td><select class="status-select" data-petservice-id="' + escapeHtml(service._id) + '">' + options + '</select></td>'
+        + '</tr>';
+}
+
+async function refreshPetServiceTable() {
+    var tbody = document.getElementById('petservices-table-body');
+    if (!tbody) return;
+    try {
+        var res = await axios.get('/admin/pet-service/list', { params: { _ts: Date.now() } });
+        var services = (res.data && res.data.petServices) || [];
+
+        // O'zgarish bormi - id+status hash bilan tekshirish
+        var existing = Array.from(tbody.querySelectorAll('tr[data-ps-id]')).map(function (r) {
+            return r.dataset.psId + ':' + r.dataset.psStatus;
+        }).join('|');
+        var incoming = services.map(function (s) { return s._id + ':' + s.serviceStatus; }).join('|');
+        if (existing === incoming) return; // o'zgarish yo'q
+
+        tbody.innerHTML = services.map(function (s, i) { return buildPetServiceRow(s, i); }).join('');
+
+        // UI ni qayta bog'lash
+        if (typeof initPetServiceStatusColors === 'function') initPetServiceStatusColors();
+        if (typeof updatePetServiceTabCounts === 'function') updatePetServiceTabCounts();
+        var activeTab = document.querySelector('.tab-btn.active[data-ps-filter]');
+        var filter = activeTab ? (activeTab.dataset.psFilter || 'ALL') : 'ALL';
+        if (typeof filterPetServiceRows === 'function') filterPetServiceRows(filter);
+    } catch (e) {
+        // jim qoldiramiz - polling davom etadi
+    }
+}
+
+function initPetServicePolling() {
+    if (!document.getElementById('petservices-table-body')) return;
+    if (window.__petServicePollHandle) clearInterval(window.__petServicePollHandle);
+    window.__petServicePollHandle = setInterval(refreshPetServiceTable, 5000);
 }

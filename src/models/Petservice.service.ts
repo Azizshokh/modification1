@@ -31,7 +31,6 @@ class PetServiceService {
             .findOne({
                 serviceDate: { $gte: dayStart, $lte: dayEnd },
                 serviceTime: serviceTime,
-                serviceStatus: { $ne: PetServiceStatus.CANCELLED },
             })
             .exec();
 
@@ -41,6 +40,23 @@ class PetServiceService {
     /** Book a vegetarian service slot */
     public async createPetService(input: PetServiceInput): Promise<PetService> {
         try {
+            // Pre-flight validation so the caller gets a clear reason
+            const required: (keyof PetServiceInput)[] = [
+                "memberId",
+                "petName",
+                "petType",
+                "serviceType",
+                "serviceLocation",
+                "serviceAddress",
+                "serviceDate",
+                "serviceTime",
+            ];
+            const missing = required.filter((k) => input[k] === undefined || input[k] === null || input[k] === "");
+            if (missing.length) {
+                console.error("createPetService missing fields:", missing, "received body:", input);
+                throw new Errors(HttpCode.BAD_REQUEST, `Missing required fields: ${missing.join(", ")}` as unknown as Message);
+            }
+
             const memberId = shapeIntoMongooseObjectId(input.memberId);
 
             const isAvailable = await this.checkSlotAvailability(
@@ -57,14 +73,19 @@ class PetServiceService {
             });
             return result.toJSON();
         } catch (error) {
-            const mongoError = error as { code?: number; name?: string };
+            // Surface the underlying cause instead of hiding it
+            console.error("createPetService underlying error:", error);
+
+            // Don't re-wrap our own typed errors (e.g. SLOT_ALREADY_TAKEN, missing-fields)
+            if (error instanceof Errors) throw error;
+
+            const mongoError = error as { code?: number; name?: string; message?: string };
             if (mongoError?.code === 11000) {
                 throw new Errors(HttpCode.BAD_REQUEST, Message.SLOT_ALREADY_TAKEN);
             }
-            if (mongoError?.name === "BSONError") {
-                throw new Errors(HttpCode.BAD_REQUEST, Message.CREATE_FAILED);
-            }
-            throw new Errors(HttpCode.BAD_REQUEST, Message.CREATE_FAILED);
+            // Bubble the real Mongoose/BSON message up to the HTTP response
+            const detail = mongoError?.message || "Unknown error";
+            throw new Errors(HttpCode.BAD_REQUEST, `${Message.CREATE_FAILED} (${detail})` as unknown as Message);
         }
     }
 
@@ -72,14 +93,11 @@ class PetServiceService {
     public async getMyPetServices(memberId: string): Promise<PetService[]> {
         const id = shapeIntoMongooseObjectId(memberId);
         const result = await this.petServiceModel
-            .find({
-                memberId: id,
-                serviceStatus: { $ne: PetServiceStatus.CANCELLED },
-            })
+            .find({ memberId: id })
+            .sort({ updatedAt: -1 })
             .lean()
             .exec();
-        if (!result) throw new Errors(HttpCode.NOT_FOUND, Message.NO_DATA_FOUND);
-        return result as PetService[];
+        return (result || []) as PetService[];
     }
 
     /** Get available (free) time slots for a given day */
@@ -99,7 +117,6 @@ class PetServiceService {
         const bookedSlots = await this.petServiceModel
             .find({
                 serviceDate: { $gte: dayStart, $lte: dayEnd },
-                serviceStatus: { $ne: PetServiceStatus.CANCELLED },
             })
             .select("serviceTime")
             .lean()
@@ -109,17 +126,18 @@ class PetServiceService {
         return ALL_SLOTS.filter((slot) => !bookedTimes.includes(slot));
     }
 
-    /** Cancel a service (member's own) */
+    /** Cancel a service (member's own) — hard-deletes since there is no
+     *  CANCELLED status anymore. Only allowed while still in PAUSE. */
     public async cancelPetService(serviceId: string, memberId: string): Promise<PetService> {
         const id = shapeIntoMongooseObjectId(serviceId);
         const mId = shapeIntoMongooseObjectId(memberId);
 
         const result = await this.petServiceModel
-            .findOneAndUpdate(
-                { _id: id, memberId: mId, serviceStatus: PetServiceStatus.ACTIVE },
-                { serviceStatus: PetServiceStatus.CANCELLED },
-                { new: true }
-            )
+            .findOneAndDelete({
+                _id: id,
+                memberId: mId,
+                serviceStatus: PetServiceStatus.PAUSE,
+            })
             .exec();
         if (!result) throw new Errors(HttpCode.NOT_MODIFIED, Message.UPDATE_FAILED);
         return result as PetService;

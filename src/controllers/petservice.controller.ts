@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { T } from "../libs/types/common";
+import { ExtendedRequest } from "../libs/types/member";
 import { PetServiceInput, PetServiceUpdateInput } from "../libs/types/petservice";
 import PetServiceService from "../models/Petservice.service";
 import Errors from "../libs/Error";
@@ -51,6 +52,21 @@ petServiceController.getMyPetServices = async (req: Request, res: Response) => {
     }
 };
 
+petServiceController.getMyAuthenticatedPetServices = async (req: ExtendedRequest, res: Response) => {
+    try {
+        console.log("getMyAuthenticatedPetServices");
+        const memberId = String(req.member._id);
+        const result = await petServiceService.getMyPetServices(memberId);
+
+        res.set("Cache-Control", "no-store");
+        res.json({ petServices: result });
+    } catch (error) {
+        console.error("Error in getMyAuthenticatedPetServices:", error);
+        if (error instanceof Errors) res.status(error.code).json(error);
+        else res.status(Errors.standard.code).json(Errors.standard);
+    }
+};
+
 petServiceController.cancelPetService = async (req: Request, res: Response) => {
     try {
         console.log("cancelPetService");
@@ -77,6 +93,18 @@ petServiceController.getAllPetServices = async (req: Request, res: Response) => 
         res.render("petservices", { petServices: result });
     } catch (error) {
         console.error("Error in getAllPetServices:", error);
+        if (error instanceof Errors) res.status(error.code).json(error);
+        else res.status(Errors.standard.code).json(Errors.standard);
+    }
+};
+
+petServiceController.getAllPetServicesJson = async (req: Request, res: Response) => {
+    try {
+        const inquiry = req.query;
+        const result = await petServiceService.getAllPetServices(inquiry as any);
+        res.json({ petServices: result });
+    } catch (error) {
+        console.error("Error in getAllPetServicesJson:", error);
         if (error instanceof Errors) res.status(error.code).json(error);
         else res.status(Errors.standard.code).json(Errors.standard);
     }

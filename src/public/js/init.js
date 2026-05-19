@@ -38,5 +38,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (typeof initPetServiceTabs === 'function') initPetServiceTabs();
     if (typeof initPetServiceStatusColors === 'function') initPetServiceStatusColors();
     if (typeof filterPetServiceRows === 'function') filterPetServiceRows('ALL');
+    if (typeof initPetServicePolling === 'function') initPetServicePolling();
 
 });

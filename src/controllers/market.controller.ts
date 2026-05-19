@@ -68,7 +68,6 @@ marketController.proccesSignup = async (req: AdminRequest, res: Response) => {
         newMember.memberType = MemberType.ADMIN;
 
         const result = await memberService.proccessSignup(newMember);
-        //TODO: SESSIONS Authenticate
         req.session.member = result;
         req.session.save(function () {
             res.redirect("/admin");
@@ -85,7 +84,6 @@ marketController.proccesLogin = async (req: AdminRequest, res: Response) => {
         const input: LoginInput = req.body;
         const result = await memberService.proccessLogin(input);
 
-        //TODO: SESSIONS Authenticate
         req.session.member = result;
         req.session.save(function () {
             res.redirect("/admin");

@@ -32,7 +32,11 @@ router.post("/order/update", memberController.verifyAuth, orderController.update
 /*** Pet Service Routes ***/
 router.get("/pet-service/slots", petServiceController.getAvailableSlots);
 router.post("/pet-service/create", petServiceController.createPetService);
+router.get("/pet-service/my", memberController.verifyAuth, petServiceController.getMyAuthenticatedPetServices);
 router.get("/pet-service/my/:memberId", petServiceController.getMyPetServices);
 router.post("/pet-service/cancel/:id", petServiceController.cancelPetService);
+
+/*** Aliases (generic API naming) ***/
+router.post("/api/pet-service", petServiceController.createPetService);
 
 export default router;

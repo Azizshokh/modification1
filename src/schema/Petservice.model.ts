@@ -25,7 +25,7 @@ const petServiceSchema = new Schema(
         serviceStatus: {
             type: String,
             enum: PetServiceStatus,
-            default: PetServiceStatus.ACTIVE,
+            default: PetServiceStatus.PAUSE,
         },
         serviceDate: {
             type: Date,

@@ -8,10 +8,9 @@ export enum PetType {
 }
 
 export enum PetServiceStatus {
-    ACTIVE = "ACTIVE",
+    PAUSE = "PAUSE",
     ACCEPTED = "ACCEPTED",
     COMPLETED = "COMPLETED",
-    CANCELLED = "CANCELLED",
 }
 
 export enum PetServiceType {
@@ -19,7 +18,6 @@ export enum PetServiceType {
     CLINIC_TO_CLINIC = "CLINIC_TO_CLINIC",
     ONLINE_CONSULTATION = "ONLINE_CONSULTATION",
     GROOMING = "GROOMING",
-    VACCINATION = "VACCINATION",
 }
 
 export enum PetServiceLocation {

@@ -44,6 +44,11 @@ routerAdmin.get(
     marketController.verifyAdmin,
     petServiceController.getAllPetServices
 );
+routerAdmin.get(
+    "/pet-service/list",
+    marketController.verifyAdmin,
+    petServiceController.getAllPetServicesJson
+);
 
 routerAdmin.post(
     "/pet-service/create",
