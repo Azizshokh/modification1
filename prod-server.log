@@ -1,0 +1,12 @@
+
+> modification1@1.0.0 start:prod
+> node -e "process.env.NODE_ENV='production'; require('./dist/server.js')"
+
+MongoDB connected successfully
+Server is running on port 4001
+Admin project on http://localhost:4001/admin 
+
+Connection & total [1]
+Connection & total [2]
+GET /admin 315.655 [200] 
+
