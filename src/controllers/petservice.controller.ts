@@ -12,7 +12,6 @@ const petServiceController: T = {};
 
 petServiceController.getAvailableSlots = async (req: Request, res: Response) => {
     try {
-        console.log("getAvailableSlots");
         const { serviceDate } = req.query;
         const result = await petServiceService.getAvailableSlots(new Date(serviceDate as string));
 
@@ -26,7 +25,6 @@ petServiceController.getAvailableSlots = async (req: Request, res: Response) => 
 
 petServiceController.createPetService = async (req: Request, res: Response) => {
     try {
-        console.log("createPetService");
         const input: PetServiceInput = req.body;
         const result = await petServiceService.createPetService(input);
 
@@ -40,7 +38,6 @@ petServiceController.createPetService = async (req: Request, res: Response) => {
 
 petServiceController.getMyPetServices = async (req: Request, res: Response) => {
     try {
-        console.log("getMyPetServices");
         const memberId = req.params.memberId as string;
         const result = await petServiceService.getMyPetServices(memberId);
 
@@ -54,7 +51,6 @@ petServiceController.getMyPetServices = async (req: Request, res: Response) => {
 
 petServiceController.getMyAuthenticatedPetServices = async (req: ExtendedRequest, res: Response) => {
     try {
-        console.log("getMyAuthenticatedPetServices");
         const memberId = String(req.member._id);
         const result = await petServiceService.getMyPetServices(memberId);
 
@@ -69,7 +65,6 @@ petServiceController.getMyAuthenticatedPetServices = async (req: ExtendedRequest
 
 petServiceController.cancelPetService = async (req: Request, res: Response) => {
     try {
-        console.log("cancelPetService");
         const id = req.params.id as string;
         const memberId = req.body.memberId as string;
         const result = await petServiceService.cancelPetService(id, memberId);
@@ -86,7 +81,6 @@ petServiceController.cancelPetService = async (req: Request, res: Response) => {
 
 petServiceController.getAllPetServices = async (req: Request, res: Response) => {
     try {
-        console.log("getAllPetServices");
         const inquiry = req.query;
         const result = await petServiceService.getAllPetServices(inquiry as any);
 
@@ -98,21 +92,8 @@ petServiceController.getAllPetServices = async (req: Request, res: Response) => 
     }
 };
 
-petServiceController.getAllPetServicesJson = async (req: Request, res: Response) => {
-    try {
-        const inquiry = req.query;
-        const result = await petServiceService.getAllPetServices(inquiry as any);
-        res.json({ petServices: result });
-    } catch (error) {
-        console.error("Error in getAllPetServicesJson:", error);
-        if (error instanceof Errors) res.status(error.code).json(error);
-        else res.status(Errors.standard.code).json(Errors.standard);
-    }
-};
-
 petServiceController.updateChosenPetService = async (req: Request, res: Response) => {
     try {
-        console.log("updateChosenPetService");
         const input: PetServiceUpdateInput = req.body;
         const result = await petServiceService.updateChosenPetService(input);
 

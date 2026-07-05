@@ -27,7 +27,6 @@ memberController.getAdmin = async (req: Request, res: Response) => {
 
 memberController.signup = async (req: Request, res: Response) => {
     try {
-        console.log("signup");
         const input: MemberInput = req.body;
         const result: Member = await memberService.signup(input);
         const token = await authService.createToken(result);
@@ -47,7 +46,6 @@ memberController.signup = async (req: Request, res: Response) => {
 
 memberController.login = async (req: Request, res: Response) => {
     try {
-        console.log("login");
         const input: LoginInput = req.body;
         const result = await memberService.login(input);
         const token = await authService.createToken(result);
@@ -128,11 +126,9 @@ memberController.verifyAuth = async (
 
         if (!req.member)
             throw new Errors(HttpCode.UNAUTHORIZED, Message.NOT_AUTHENTICATED);
-        console.log("req.member:", req.member);
-
         next();
     } catch (err) {
-        console.log("Error, verifyAuth:", err);
+        console.warn("Authentication verification failed:", err);
         if (err instanceof Errors) res.status(err.code).json(err);
         else res.status(Errors.standard.code).json(Errors.standard);
 
@@ -147,11 +143,9 @@ memberController.retrieveAuth = async (
     try {
         const token = req.cookies["accessToken"];
         if (token) req.member = await authService.checkAuth(token);
-        console.log("req.member:", req.member);
-
         next();
     } catch (err) {
-        console.log("Error, retrieveAuth:", err);
+        console.warn("Optional authentication retrieval failed:", err);
         next();
 
     }

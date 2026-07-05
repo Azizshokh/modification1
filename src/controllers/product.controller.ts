@@ -40,7 +40,6 @@ productController.getProducts = async (req: Request, res: Response) => {
 productController.getProductDetail = async (req: ExtendedRequest, res: Response) => {
     try {
         const { id } = req.params;
-        console.log("req.member:", req.member);
         const memberId = req.member?._id ?? null;
         const result = await productService.getProductDetail(memberId, id as string);
         res.status(HttpCode.OK).json(result);
@@ -57,7 +56,6 @@ productController.getProductDetail = async (req: ExtendedRequest, res: Response)
 /*** SSR ***/
 productController.getAllProducts = async (req: AdminRequest, res: Response) => {
     try {
-        console.log("getAllProducts");
         const page = Math.max(1, Number(req.query.page) || 1);
         const limit = 10;
         const currentStatus = String(req.query.status || 'ALL');
@@ -77,7 +75,6 @@ productController.getAllProducts = async (req: AdminRequest, res: Response) => {
 
 productController.createNewProduct = async (req: AdminRequest, res: Response) => {
     try {
-        console.log("createNewProduct");
         if (!req.files?.length) throw new Errors(HttpCode.BAD_REQUEST, Message.CREATE_FAILED);
 
         const data: ProductInput = req.body;
@@ -98,7 +95,6 @@ productController.createNewProduct = async (req: AdminRequest, res: Response) =>
 
 productController.updateChosenProduct = async (req: Request, res: Response) => {
     try {
-        console.log("updateChosenProduct");
         const id = String(req.params.id);
         const result = await productService.updateChosenProduct(id, req.body);
 

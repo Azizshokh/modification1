@@ -53,7 +53,7 @@ class PetServiceService {
             ];
             const missing = required.filter((k) => input[k] === undefined || input[k] === null || input[k] === "");
             if (missing.length) {
-                console.error("createPetService missing fields:", missing, "received body:", input);
+                console.warn("createPetService missing required fields:", missing);
                 throw new Errors(HttpCode.BAD_REQUEST, `Missing required fields: ${missing.join(", ")}` as unknown as Message);
             }
 

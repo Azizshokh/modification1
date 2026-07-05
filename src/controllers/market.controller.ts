@@ -12,7 +12,6 @@ const productService = new ProductService();
 const marketController: T = {};
 marketController.goHome = async (req: Request, res: Response) => {
     try {
-        console.log("goHome");
         const [{ products, total: totalProducts }, users] = await Promise.all([
             productService.getAllProducts(),
             memberService.getUsers(),
@@ -59,7 +58,6 @@ marketController.getSignup = (req: Request, res: Response) => {
 
 marketController.proccesSignup = async (req: AdminRequest, res: Response) => {
     try {
-        console.log("proccesSignup");
         const file = req.file;
         if (!file) throw new Errors(HttpCode.BAD_REQUEST, Message.SOMETHING_WENT_WRONG);
 
@@ -109,7 +107,6 @@ marketController.logout = (req: AdminRequest, res: Response) => {
 
 marketController.getUsers = async (req: Request, res: Response) => {
     try {
-        console.log("getUsers");
         const result = await memberService.getUsers();
 
         const stats = {
@@ -128,7 +125,6 @@ marketController.getUsers = async (req: Request, res: Response) => {
 
 marketController.updateChosenUser = async (req: Request, res: Response) => {
     try {
-        console.log("updateChosenUser");
         const input: MemberUpdateInput = req.body;
         const result = await memberService.updateChosenUser(input);
 
