@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # PRODUCTION
 git reset --hard
@@ -7,7 +8,8 @@ git pull origin master
 
 npm i
 npm run build
-pm2 start process.config.js --env production
+pm2 startOrReload process.config.js --env production
+pm2 save
 
 # DEVELOPMENT
 # git reset --hard

@@ -29,10 +29,19 @@ const resolveAppPath = (...segments: string[]): string => {
     return path.join(__dirname, ...segments);
 };
 
+const resolveUploadPath = (): string => {
+    const projectRootPath = path.resolve(process.cwd(), "uploads");
+    if (fs.existsSync(projectRootPath)) {
+        return projectRootPath;
+    }
+
+    return path.resolve(__dirname, "..", "uploads");
+};
+
 /*** 1-Entrance ***/
 const app = express();
 app.use(express.static(resolveAppPath("public")));
-app.use("/uploads", express.static(path.resolve(process.cwd(), "uploads")));
+app.use("/uploads", express.static(resolveUploadPath()));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors({ origin: true, credentials: true }));
